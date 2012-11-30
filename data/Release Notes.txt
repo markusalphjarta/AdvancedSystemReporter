@@ -1,6 +1,8 @@
 Advanced System Reporter
 ------------------------
+v.1.4.3
 
+- various fixes with the casing of attributes in filters/viewers/scanners which stopped some reports from working or added unnecessary warnings to the log files.
 
 v.1.4.2
 
