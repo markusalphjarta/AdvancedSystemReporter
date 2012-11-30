@@ -174,8 +174,11 @@
   -->
   <PropertyGroup>
     <PostBuildEvent>xcopy /y /s "$(ProjectDir)ASR.config" "$(SitecoreWebRoot)\App_Config\Include\"
+
 xcopy /y /s "$(ProjectDir)sitecore\shell\*.aspx" "$(SitecoreWebRoot)\sitecore\shell\"
+
 xcopy /y /s "$(ProjectDir)*.xml" "$(SitecoreWebRoot)\sitecore modules\Shell\ASR\"
-xcopy /y /s "$(TargetPath)" "$(SitecoreWebRoot)\bin\"</PostBuildEvent>
+xcopy /y /s "$(TargetPath)" "$(SitecoreWebRoot)\bin\"
+xcopy /y /s "$(SolutionDir)\lib\CorePoint.DomainObjects.dll" "$(SitecoreWebRoot)\bin\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
