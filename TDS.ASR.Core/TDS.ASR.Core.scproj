@@ -52,12 +52,12 @@
   </ItemGroup>
   <ItemGroup>
     <SitecoreItem Include="sitecore\content.item">
-      <Icon>/temp/IconCache/People/16x16/cubes_blue.png</Icon>
+      <Icon>/~/icon/People/16x16/cubes_blue.png.aspx</Icon>
       <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
     </SitecoreItem>
     <SitecoreItem Include="sitecore\content\Applications.item">
-      <Icon>/temp/IconCache/Software/16x16/application.png</Icon>
+      <Icon>/~/icon/Software/16x16/application.png.aspx</Icon>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
       <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
     </SitecoreItem>
@@ -152,12 +152,12 @@
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
     </SitecoreItem>
     <SitecoreItem Include="sitecore\layout.item">
-      <Icon>/temp/IconCache/Applications/16x16/windows.png</Icon>
+      <Icon>/~/icon/Applications/16x16/windows.png.aspx</Icon>
       <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
     </SitecoreItem>
     <SitecoreItem Include="sitecore\layout\Layouts.item">
-      <Icon>/temp/IconCache/Applications/16x16/windows.png</Icon>
+      <Icon>/~/icon/Applications/16x16/windows.png.aspx</Icon>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
       <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
     </SitecoreItem>
@@ -169,6 +169,7 @@
     <SitecoreItem Include="sitecore\layout\Layouts\Applications\ASR.item">
       <Icon>/temp/IconCache/Applications/16x16/text_rich_marked.png</Icon>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
+      <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
     </SitecoreItem>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\HedgehogDevelopment\SitecoreProject\v9.0\HedgehogDevelopment.SitecoreProject.targets" />
