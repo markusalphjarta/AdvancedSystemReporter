@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2012
+# Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASR", "ASR\ASR.csproj", "{4E189BA3-7E40-47F8-9552-08558E06A8AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASR.Reports", "Reports\ASR.Reports.csproj", "{8BAA2172-A290-4C64-AC0B-3D6AF78DA578}"
@@ -15,6 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{EC2FE5D6-3
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packages", "packages", "{2CD75C06-13A9-4A52-94CB-4A4B0A5D0C4D}"
+	ProjectSection(SolutionItems) = preProject
+		data\packages\AdvancedSystemReporter.package = data\packages\AdvancedSystemReporter.package
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -48,9 +51,5 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{2CD75C06-13A9-4A52-94CB-4A4B0A5D0C4D} = {EC2FE5D6-3696-41FC-9AA5-FA9D17C95965}
-	EndGlobalSection
-	GlobalSection(SubversionScc) = preSolution
-		Svn-Managed = True
-		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal
