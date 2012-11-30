@@ -10,6 +10,7 @@ namespace ASR.Interface
 {
 	public abstract class BaseViewer : BaseReportObject
 	{
+	    public string Sort { get; set; }
 		#region Abstract methods
 
 		public abstract void Display(DisplayElement dElement);

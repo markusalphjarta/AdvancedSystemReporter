@@ -813,6 +813,7 @@
     <SitecoreItem Include="sitecore\system\Tasks\Commands\Email Reports.item">
       <Icon>/temp/IconCache/People/16x16/clock_stop.png</Icon>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
+      <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
     </SitecoreItem>
     <SitecoreItem Include="sitecore\system\Tasks\Schedules.item">
       <Icon>/temp/IconCache/Applications/16x16/folder.png</Icon>
@@ -822,6 +823,7 @@
     <SitecoreItem Include="sitecore\system\Tasks\Schedules\Email Reports schedule.item">
       <Icon>/temp/IconCache/People/16x16/clock_run.png</Icon>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
+      <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
     </SitecoreItem>
     <SitecoreItem Include="sitecore\templates.item">
       <Icon>/temp/IconCache/Applications/16x16/form_blue.png</Icon>

@@ -288,10 +288,10 @@ namespace ASR.Interface
 				if (_sortColumns == null)
 				{ 
                     _sortColumns = new NameValueCollection();
-					foreach (var viewer in viewers.Values)
+					foreach (var viewer in Viewers)
 					{
-						NameValueCollection parameters = Sitecore.StringUtil.ParseNameValueCollection(viewer.ReplacedAttributes, '|', '=');
-						string sortParameter = parameters["sort"];
+
+					    string sortParameter = viewer.Sort;
 						if (sortParameter != null)
 						{
 							_sortColumns.Add( StringUtil.ParseNameValueCollection(sortParameter, '&', ',') );

@@ -10,6 +10,7 @@ namespace ASR.Reports.Items
 	{
 		public enum Mode { Item = -1, Descendants = 1, Children = 0 };
 
+	    public string Types { get; set; }
         public int Deep { get; set; }
 		public Mode DeepMode
 		{
@@ -71,10 +72,9 @@ namespace ASR.Reports.Items
 		public override ICollection Scan()
 		{
 
-			Logs.LogScanner scanner = new Logs.LogScanner();
-			scanner.AddParameters(string.Format("{0}=audit", Logs.LogScanner.ENTRY_TYPES_PARAMETER));
+			var scanner = new Logs.LogScanner {Types = "audit"};
 
-			IEnumerable<Logs.AuditItem> auditItems = scanner.Scan().Cast<Logs.AuditItem>();
+		    IEnumerable<Logs.AuditItem> auditItems = scanner.Scan().OfType<Logs.AuditItem>();
 
 			Item[] items;
 			ArrayList results = new ArrayList();

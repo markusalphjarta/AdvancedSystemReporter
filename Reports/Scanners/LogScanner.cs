@@ -10,7 +10,8 @@ namespace ASR.Reports.Logs
 	public class LogScanner : ASR.Interface.BaseScanner
 	{
 		public readonly static string DEFAULT_PATTERN = "*.txt";
-		public readonly static string ENTRY_TYPES_PARAMETER = "types";
+
+	    public string Types { get; set; }
 		
 
 		private string valid_types;
@@ -20,7 +21,7 @@ namespace ASR.Reports.Logs
 			{
 				if (valid_types == null)
 				{
-					valid_types = getParameter(ENTRY_TYPES_PARAMETER);
+					valid_types = Types;
 					if (string.IsNullOrEmpty(valid_types))
 					{
 						valid_types = "ERROR|WARN|INFO  AUDIT|INFO";
