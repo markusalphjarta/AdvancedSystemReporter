@@ -52,12 +52,12 @@
   </ItemGroup>
   <ItemGroup>
     <SitecoreItem Include="sitecore\content.item">
-      <Icon>/~/icon/People/16x16/cubes_blue.png.aspx</Icon>
+      <Icon>/temp/IconCache/People/16x16/cubes_blue.png</Icon>
       <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
     </SitecoreItem>
     <SitecoreItem Include="sitecore\content\Applications.item">
-      <Icon>/~/icon/Software/16x16/application.png.aspx</Icon>
+      <Icon>/temp/IconCache/Software/16x16/application.png</Icon>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
       <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
     </SitecoreItem>
@@ -174,14 +174,15 @@
     <SitecoreItem Include="sitecore\content\Documents and settings\All users\Start menu\Programs\Advanced System Reporter.item">
       <Icon>/temp/IconCache/Applications/32x32/view.png</Icon>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
+      <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
     </SitecoreItem>
     <SitecoreItem Include="sitecore\layout.item">
-      <Icon>/~/icon/Applications/16x16/windows.png.aspx</Icon>
+      <Icon>/temp/IconCache/Applications/16x16/windows.png</Icon>
       <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
     </SitecoreItem>
     <SitecoreItem Include="sitecore\layout\Layouts.item">
-      <Icon>/~/icon/Applications/16x16/windows.png.aspx</Icon>
+      <Icon>/temp/IconCache/Applications/16x16/windows.png</Icon>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
       <ChildItemSynchronization>NoChildSynchronization</ChildItemSynchronization>
     </SitecoreItem>
