@@ -1,6 +1,6 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASR", "ASR\ASR.csproj", "{4E189BA3-7E40-47F8-9552-08558E06A8AA}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ASR.Reports", "Reports\ASR.Reports.csproj", "{8BAA2172-A290-4C64-AC0B-3D6AF78DA578}"
@@ -8,6 +8,13 @@ EndProject
 Project("{CAA73BB0-EF22-4D79-A57E-DF67B3BA9C80}") = "TDS.ASR.Core", "TDS.ASR.Core\TDS.ASR.Core.scproj", "{D2C2BB46-4F6A-4950-955A-4F7F2E8A1BCE}"
 EndProject
 Project("{CAA73BB0-EF22-4D79-A57E-DF67B3BA9C80}") = "TDS.ASR.Master", "TDS.ASR.Master\TDS.ASR.Master.scproj", "{2234E999-A149-4BEF-9B0B-964A27FD0BEE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "data", "data", "{EC2FE5D6-3696-41FC-9AA5-FA9D17C95965}"
+	ProjectSection(SolutionItems) = preProject
+		data\Release Notes.txt = data\Release Notes.txt
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "packages", "packages", "{2CD75C06-13A9-4A52-94CB-4A4B0A5D0C4D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,5 +45,12 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{2CD75C06-13A9-4A52-94CB-4A4B0A5D0C4D} = {EC2FE5D6-3696-41FC-9AA5-FA9D17C95965}
+	EndGlobalSection
+	GlobalSection(SubversionScc) = preSolution
+		Svn-Managed = True
+		Manager = AnkhSVN - Subversion Support for Visual Studio
 	EndGlobalSection
 EndGlobal
