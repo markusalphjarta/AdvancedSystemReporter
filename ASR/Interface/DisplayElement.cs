@@ -48,16 +48,6 @@ namespace ASR.Interface
         }
 
         /// <summary>
-        /// Checks if a column name has also been added. You cannot repeat column names
-        /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
-        public bool HasColumn(string name)
-        {
-            return columns.ContainsKey(name);
-        }
-
-        /// <summary>
         /// Queries the value of a particular column
         /// </summary>
         /// <param name="name">name of the colmn</param>

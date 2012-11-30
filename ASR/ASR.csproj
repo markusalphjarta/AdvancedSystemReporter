@@ -175,7 +175,6 @@
     <PostBuildEvent>xcopy /y /s "$(ProjectDir)ASR.config" "$(SitecoreWebRoot)\App_Config\Include\"
 xcopy /y /s "$(ProjectDir)sitecore\shell\*.aspx" "$(SitecoreWebRoot)\sitecore\shell\"
 xcopy /y /s "$(ProjectDir)*.xml" "$(SitecoreWebRoot)\sitecore modules\Shell\ASR\"
-xcopy /y /s "$(TargetPath)" "$(SitecoreWebRoot)\bin\"
-xcopy /y/s "$(SolutionDir)data\packages\Advanced System Reporter.xml" "$(SitecoreWebRoot)"\..\data\packages</PostBuildEvent>
+xcopy /y /s "$(TargetPath)" "$(SitecoreWebRoot)\bin\"</PostBuildEvent>
   </PropertyGroup>
 </Project>
