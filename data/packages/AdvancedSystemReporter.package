@@ -3,7 +3,7 @@
     <metadata>
       <PackageName>Advanced System Reporter</PackageName>
       <Author>Alenka Caserman / Raul Jimenez</Author>
-      <Version>1.4.4</Version>
+      <Version>1.4.3</Version>
       <Revision />
       <License />
       <Comment />
@@ -92,7 +92,6 @@ If you want to use the Email functionality make sure the default mail settings i
         <x-item>/master/sitecore/system/Modules/ASR/Configuration/Parameters/Date/{0DAED923-E1EE-4F78-B66F-B036A1A03653}/invariant/0</x-item>
         <x-item>/master/sitecore/system/Modules/ASR/Configuration/Parameters/Field/{5C52A04A-D5C0-4099-97DD-CCD5677FF21B}/invariant/0</x-item>
         <x-item>/master/sitecore/system/Modules/ASR/Configuration/Parameters/FromDate/{CB5076CB-80CA-4B82-A17A-D64B0187ADA3}/invariant/0</x-item>
-        <x-item>/master/sitecore/system/Modules/ASR/Configuration/Parameters/Length/{00FFF1C1-0AAF-4FAD-B114-1C4C80A6CB7F}/invariant/0</x-item>
         <x-item>/master/sitecore/system/Modules/ASR/Configuration/Parameters/MediaRoot/{5A5D9AD2-E53F-41AA-A6DF-608E34EF5092}/invariant/0</x-item>
         <x-item>/master/sitecore/system/Modules/ASR/Configuration/Parameters/Mode/{613161BF-2BBD-4505-888B-D8C687035CA1}/invariant/0</x-item>
         <x-item>/master/sitecore/system/Modules/ASR/Configuration/Parameters/NumOfVersions/{3C8B7F1F-6F23-47C5-9CD6-F1712CA12D57}/invariant/0</x-item>
@@ -245,10 +244,6 @@ If you want to use the Email functionality make sure the default mail settings i
         <x-item>/master/sitecore/templates/System/ASR/Value/Data/Value/{1AC5871D-8232-4DF5-8EE1-F2D038DEE591}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/System/ASR/Viewer/Viewer/{51E339DA-D9DC-41AB-8011-195D374C3B7E}/invariant/0</x-item>
         <x-item>/master/sitecore/templates/System/ASR/Viewer/Viewer/Columns/{2FE97449-F425-4789-AB93-C246BFA1749B}/invariant/0</x-item>
-        <x-item>/core/sitecore/system/Field types/Reporter/{833E89D6-D0B4-4C4F-AFB2-671F28EAD9AF}/invariant/0</x-item>
-        <x-item>/core/sitecore/system/Field types/Reporter/Columns/{FE24486B-F99D-465F-804D-ECCE22B6DB0F}/invariant/0</x-item>
-        <x-item>/core/sitecore/system/Field types/Reporter/Columns/Menu/{031AC584-B1E6-480B-9891-D1DA869429A9}/invariant/0</x-item>
-        <x-item>/core/sitecore/system/Field types/Reporter/Columns/Menu/Edit/{C9F2BC73-F02D-402A-BF67-E98449DDF98A}/invariant/0</x-item>
       </Entries>
       <SkipVersions>False</SkipVersions>
       <Converter>
