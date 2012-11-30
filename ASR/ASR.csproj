@@ -143,6 +143,7 @@
     <Content Include="sitecore\shell\download.aspx" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="AdvancedSystemReporter.package" />
     <None Include="ASR.config">
       <SubType>Designer</SubType>
     </None>
