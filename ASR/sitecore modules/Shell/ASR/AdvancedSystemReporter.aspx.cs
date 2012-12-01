@@ -38,7 +38,7 @@ namespace ASR.sitecore_modules.Shell.ASR
 
         protected override void OnLoad(EventArgs e)
         {
-            Assert.ArgumentNotNull(e, "e");
+            Assert.ArgumentNotNull(se, "e");
             base.OnLoad(e);
             Assert.CanRunApplication("Security/User Manager");
             IEnumerable<User> managedUsers = Sitecore.Context.User.Delegation.GetManagedUsers();
@@ -49,9 +49,8 @@ namespace ASR.sitecore_modules.Shell.ASR
         public CommandContext GetCommandContext()
         {
             CommandContext context = new CommandContext();
-            var itemNotNull = Client.GetItemNotNull("/sitecore/content/Applications/Security/User Manager/Ribbon", Client.CoreDatabase);
 
-            //var itemNotNull = Client.GetItemNotNull("/sitecore/content/Applications/Advanced System Reporter/Ribbon", Client.CoreDatabase);
+            var itemNotNull = Client.GetItemNotNull("/sitecore/content/Applications/Advanced System Reporter/Ribbon", Client.CoreDatabase);
             context.RibbonSourceUri = itemNotNull.Uri;
             //string selectedValue = GridUtil.GetSelectedValue("Users");
             //string str2 = string.Empty;
