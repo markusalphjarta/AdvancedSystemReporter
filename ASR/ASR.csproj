@@ -53,6 +53,10 @@
     <CodeAnalysisRuleSet>AllRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="ComponentArt.Web.UI">
+      <HintPath>..\lib\ComponentArt.Web.UI.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
     <Reference Include="CorePoint.DomainObjects">
       <HintPath>..\lib\CorePoint.DomainObjects.dll</HintPath>
       <Private>False</Private>
@@ -122,6 +126,13 @@
     <Compile Include="Interface\Report.cs" />
     <Compile Include="ReportRunner.cs" />
     <Compile Include="Settings.cs" />
+    <Compile Include="sitecore modules\Shell\ASR\AdvancedSystemReporter.aspx.cs">
+      <DependentUpon>AdvancedSystemReporter.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="sitecore modules\Shell\ASR\AdvancedSystemReporter.aspx.designer.cs">
+      <DependentUpon>AdvancedSystemReporter.aspx.cs</DependentUpon>
+    </Compile>
     <Compile Include="sitecore\shell\download.aspx.cs">
       <DependentUpon>download.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -140,6 +151,9 @@
     <Content Include="Controls\Column.xml" />
     <Content Include="Controls\ColumnEditor.xml" />
     <Content Include="Controls\ItemSelectorDialog.xml" />
+    <Content Include="sitecore modules\Shell\ASR\AdvancedSystemReporter.aspx">
+      <SubType>ASPXCodeBehind</SubType>
+    </Content>
     <Content Include="sitecore\shell\download.aspx" />
   </ItemGroup>
   <ItemGroup>
@@ -164,6 +178,7 @@
       <Install>true</Install>
     </BootstrapperPackage>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
@@ -178,7 +193,10 @@
 xcopy /y /s "$(ProjectDir)sitecore\shell\*.aspx" "$(SitecoreWebRoot)\sitecore\shell\"
 
 xcopy /y /s "$(ProjectDir)*.xml" "$(SitecoreWebRoot)\sitecore modules\Shell\ASR\"
+
 xcopy /y /s "$(TargetPath)" "$(SitecoreWebRoot)\bin\"
-xcopy /y /s "$(SolutionDir)\lib\CorePoint.DomainObjects.dll" "$(SitecoreWebRoot)\bin\"</PostBuildEvent>
+xcopy /y /s "$(SolutionDir)\lib\CorePoint.DomainObjects.dll" "$(SitecoreWebRoot)\bin\"
+xcopy /y /s "$(ProjectDir)\sitecore modules\shell\asr\*.aspx" "$(SitecoreWebRoot)\sitecore modules\Shell\ASR\"
+</PostBuildEvent>
   </PropertyGroup>
 </Project>

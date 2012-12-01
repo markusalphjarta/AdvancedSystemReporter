@@ -1,4 +1,7 @@
-﻿namespace ASR.App
+﻿using ComponentArt.Web.UI;
+using Sitecore.Web.UI.Grids;
+
+namespace ASR.App
 {
   using System;
   using System.Collections.Generic;
@@ -31,7 +34,7 @@
 
     protected Section ConfigSection;
 
-    protected ASRListview ItemList;
+      protected Grid DataGrid;
 
     protected ListviewHeader LViewHeader;
 
@@ -92,10 +95,7 @@
       if (!Context.ClientPage.IsEvent)
       {
         Current.ClearContext();
-        this.LoadMenuItems();
-
-        this.ItemList.View = "Details";
-        this.ItemList.DblClick = "OnOpen";
+          this.LoadMenuItems();
 
           var queryString = WebUtil.GetQueryString();
           if(!string.IsNullOrEmpty(queryString))
@@ -108,15 +108,16 @@
 
     protected void OnOpen()
     {
-      if (this.ItemList.GetSelectedItems().Length > 0)
-      {
-        var o = this.ItemList.GetSelectedItems()[0].Value;
-        var uri = ItemUri.Parse(o);
-        if (uri != null)
-        {
-          Util.OpenItem(uri);
-        }
-      }
+        //TODO check if an item is selected and open it 
+     // if (this.ItemList.GetSelectedItems().Length > 0)
+      //  {
+      //      var o = DataGrid.SelectedItems[0].DataItem;
+      //  var uri = ItemUri.Parse(o);
+      //  if (uri != null)
+      //  {
+      //    Util.OpenItem(uri);
+      //  }
+      //}
     }
 
     [HandleMessage("ASR.MainForm:openlink")]
@@ -320,107 +321,75 @@
       this.updateInterface(null);
     }
 
-    //private void openReport(NameValueCollection nvc)
-    //{
-    //  var id = nvc["id"];
-    //  if (string.IsNullOrEmpty(id))
-    //  {
-    //    return;
-    //  }
-
-    //  var director = new SCDirector("master", "en");
-    //  if (!director.ObjectExists(id)) return;
-    //  var rItem = director.GetObjectByIdentifier<ReportItem>(id);
-    //  foreach (string key in nvc.Keys)
-    //  {
-    //    if (key.Contains("^"))
-    //    {
-    //      var item_parameter = key.Split('^');
-    //      var g = new Guid(item_parameter[0]);
-
-    //      var ri = rItem.FindItem(g);
-    //      if (ri != null)
-    //      {
-    //        ri.SetAttributeValue(item_parameter[1], nvc[key]);
-    //      }
-    //    }
-    //  }
-    //  Current.Context.ReportItem = rItem;
-    //  Current.Context.Report = null;
-    //  this.updateInterface(null);                                   
-    //}
-
-    private void populateItemList(int start, int count)
+   private void populateItemList(int start, int count)
     {
-      this.ItemList.Controls.Clear();
-      this.ItemList.ColumnNames.Clear();
-      this.ItemList.ColumnNames.Add("Icon", "Icon");
 
-      var columnNames = new HashSet<string>();
+       //todo render results on datagrid
+      //var columnNames = new HashSet<string>();
 
-      foreach (DisplayElement result in Current.Context.Report.GetResultElements(start - 1, count))
-      {
-        var lvi = new ListviewItem { ID = Control.GetUniqueID("lvi"), Icon = result.Icon, Value = result.Value };
-        foreach (var column in result.GetColumnNames())
-        {
-          columnNames.Add(column);
-          lvi.ColumnValues.Add(column, result.GetColumnValue(column));
-        }
-        this.ItemList.Controls.Add(lvi);
-      }
-      foreach (var column in columnNames)
-      {
-        this.ItemList.ColumnNames.Add(column, column);
-      }
+      //foreach (DisplayElement result in Current.Context.Report.GetResultElements(start - 1, count))
+      //{
+      //  var lvi = new ListviewItem { ID = Control.GetUniqueID("lvi"), Icon = result.Icon, Value = result.Value };
+      //  foreach (var column in result.GetColumnNames())
+      //  {
+      //    columnNames.Add(column);
+      //    lvi.ColumnValues.Add(column, result.GetColumnValue(column));
+      //  }
+      //  this.ItemList.Controls.Add(lvi);
+      //}
+      //foreach (var column in columnNames)
+      //{
+      //  this.ItemList.ColumnNames.Add(column, column);
+      //}
 
-      this.Status.Text = string.Format("{0} results found.", Current.Context.Report.ResultsCount());
+      //this.Status.Text = string.Format("{0} results found.", Current.Context.Report.ResultsCount());
 
-      var noPages =
-        (int)Math.Ceiling((decimal)Current.Context.Report.ResultsCount() / Current.Context.Settings.PageSize);
-      this.ItemList.CurrentPage = (int)Math.Ceiling((decimal)start / Current.Context.Settings.PageSize);
+      //var noPages =
+      //  (int)Math.Ceiling((decimal)Current.Context.Report.ResultsCount() / Current.Context.Settings.PageSize);
+      //this.ItemList.CurrentPage = (int)Math.Ceiling((decimal)start / Current.Context.Settings.PageSize);
 
-      var startpage = noPages > Current.Context.Settings.MaxNumberPages &&
-                      this.ItemList.CurrentPage > Current.Context.Settings.MaxNumberPages / 2
-                        ? this.ItemList.CurrentPage - Current.Context.Settings.MaxNumberPages / 2
-                        : 1;
-      var endpage = Math.Min(startpage + Current.Context.Settings.MaxNumberPages, noPages);
-      if (noPages > 0)
-      {
-        var sb = new StringBuilder("&nbsp;&nbsp; Page ");
-        if (startpage > 1)
-        {
-          var newpage = Math.Max(1, startpage - Current.Context.Settings.MaxNumberPages);
-          if (newpage > 1)
-          {
-            var b = new LinkButton { Header = "first", Click = "changepage:" + 1 };
-            sb.Append(b.RenderAsText());
-          }
-          var lb = new LinkButton { Header = "...", Click = "changepage:" + newpage };
-          sb.Append(lb.RenderAsText());
-        }
-        for (var i = startpage; i <= endpage; i++)
-        {
-          var b = new LinkButton
-            { Header = i.ToString(), Selected = i == this.ItemList.CurrentPage, Click = "changepage:" + i };
-          sb.Append(b.RenderAsText());
-        }
-        if (endpage < noPages)
-        {
-          var newpage = Math.Min(noPages, endpage + Current.Context.Settings.MaxNumberPages / 2);
-          var b = new LinkButton { Header = "...", Click = "changepage:" + newpage };
-          sb.Append(b.RenderAsText());
-          if (newpage < noPages)
-          {
-            b = new LinkButton { Header = "last", Click = "changepage:" + noPages };
-            sb.Append(b.RenderAsText());
-          }
-        }
-        this.Status.Text += sb.ToString();
-      }
+      //var startpage = noPages > Current.Context.Settings.MaxNumberPages &&
+      //                this.ItemList.CurrentPage > Current.Context.Settings.MaxNumberPages / 2
+      //                  ? this.ItemList.CurrentPage - Current.Context.Settings.MaxNumberPages / 2
+      //                  : 1;
+      //var endpage = Math.Min(startpage + Current.Context.Settings.MaxNumberPages, noPages);
+      //if (noPages > 0)
+      //{
+      //  var sb = new StringBuilder("&nbsp;&nbsp; Page ");
+      //  if (startpage > 1)
+      //  {
+      //    var newpage = Math.Max(1, startpage - Current.Context.Settings.MaxNumberPages);
+      //    if (newpage > 1)
+      //    {
+      //      var b = new LinkButton { Header = "first", Click = "changepage:" + 1 };
+      //      sb.Append(b.RenderAsText());
+      //    }
+      //    var lb = new LinkButton { Header = "...", Click = "changepage:" + newpage };
+      //    sb.Append(lb.RenderAsText());
+      //  }
+      //  for (var i = startpage; i <= endpage; i++)
+      //  {
+      //    var b = new LinkButton
+      //      { Header = i.ToString(), Selected = i == this.ItemList.CurrentPage, Click = "changepage:" + i };
+      //    sb.Append(b.RenderAsText());
+      //  }
+      //  if (endpage < noPages)
+      //  {
+      //    var newpage = Math.Min(noPages, endpage + Current.Context.Settings.MaxNumberPages / 2);
+      //    var b = new LinkButton { Header = "...", Click = "changepage:" + newpage };
+      //    sb.Append(b.RenderAsText());
+      //    if (newpage < noPages)
+      //    {
+      //      b = new LinkButton { Header = "last", Click = "changepage:" + noPages };
+      //      sb.Append(b.RenderAsText());
+      //    }
+      //  }
+      //  this.Status.Text += sb.ToString();
+      //}
 
-      Context.ClientPage.ClientResponse.Refresh(this.ItemList);
+      //Context.ClientPage.ClientResponse.Refresh(this.ItemList);
 
-      Context.ClientPage.ClientResponse.Refresh(this.Status);
+      //Context.ClientPage.ClientResponse.Refresh(this.Status);
     }
 
     private void purgeOldActions()
@@ -441,20 +410,23 @@
 
     private void runCommand(ClientPipelineArgs args)
     {
-      string commandname = args.Parameters["name"];
-      var sl = new StringList();
-      foreach (ListviewItem item in this.ItemList.SelectedItems)
-      {
-        sl.Add(item.Value);
-      }
-      if (sl.Count > 0)
-      {
-        Current.Context.ReportItem.RunCommand(commandname, sl);
-      }
-      else
-      {
-        SheerResponse.Alert("You need to select at least one item");
-      }
+        //todo run a command on selected items
+       
+      //string commandname = args.Parameters["name"];
+      //var sl = new StringList();
+      //foreach (ListviewItem item in this.ItemList.SelectedItems)
+      //{
+      //  sl.Add(item.Value);
+      //}
+      //if (sl.Count > 0)
+      //{
+      //  Current.Context.ReportItem.RunCommand(commandname, sl);
+      //}
+      //else
+      //{
+      //  SheerResponse.Alert("You need to select at least one item");
+      //}   
+     
     }
 
     [HandleMessage("MainForm:runfinished", false)]
@@ -467,8 +439,7 @@
     [HandleMessage("ASR.MainForm:update", false)]
     private void updateInterface(Message message)
     {
-      this.ItemList.ColumnNames.Clear();
-      this.ItemList.Controls.Clear();
+        //clear interface and repopulate
       this.Status.Text = "";
       this.createParameters();
       this.createActions();

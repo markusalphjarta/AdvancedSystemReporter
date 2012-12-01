@@ -5,11 +5,15 @@
     Created by: sitecore\admin                                       
     Created: 04/07/2008 15:01:03                                               
 ==============================================================-->
-
+  
 <control xmlns:def="Definition" xmlns="http://schemas.sitecore.net/Visual-Studio-Intellisense">
-	<ASR>
-		<FormPage Height="250px">
 
+	<ASR  xmlns:x="http://www.sitecore.net/xaml"
+>
+        <x:register assembly="ComponentArt.Web.UI" namespace="ComponentArt.Web.UI"/>
+
+        <FormPage Height="250px">
+        
 			<CodeBeside Type="ASR.App.MainForm,ASR"/>
 
 			<GridPanel class="scBackground" ID="MainPanel" vAlign="top" Height="100%" Width="100%" Cellpadding="0">
@@ -24,9 +28,118 @@
 				<GridPanel Width="100%" Height="100%" Columns="3" GridPanel.Height="100%" Style="table-layout:fixed">
 
 					<Scrollbox Height="100%" Width="100%" Padding="0">
-						<ASRListview ID="ItemList" Background="white" Multiselect="true">
-						</ASRListview>
-					</Scrollbox>
+                        <Grid id="DataGrid" runat="server"
+          RunningMode="Callback"
+          CssClass="Grid"
+                
+          ShowHeader="true"
+          HeaderCssClass="GridHeader"
+          AutoFocusSearchBox="false"
+          ManualPaging ="true"
+          EmptyGridText ="No data available yet."
+          FooterCssClass="GridFooter"
+
+          GroupByText = ""
+          GroupingNotificationText = ""
+          GroupByCssClass="GroupByCell"
+          GroupByTextCssClass="GroupByText"
+          GroupBySortAscendingImageUrl="group_asc.gif"
+          GroupBySortDescendingImageUrl="group_desc.gif"
+          GroupBySortImageWidth="10"
+          GroupBySortImageHeight="10"
+
+          GroupingNotificationTextCssClass="GridHeaderText"
+          GroupingPageSize="5"
+            
+          PageSize="15"
+          PagerStyle="Slider"
+          PagerTextCssClass="GridFooterText"
+          PagerButtonWidth="41"
+          PagerButtonHeight="22"
+          PagerImagesFolderUrl="/sitecore/shell/themes/standard/componentart/grid/pager/"
+            
+          ShowSearchBox="true"
+          SearchTextCssClass="GridHeaderText"
+          SearchBoxCssClass="SearchBox"
+      	    
+          SliderHeight="20"
+          SliderWidth="150"
+          SliderGripWidth="9"
+          SliderPopupOffsetX="20"
+          SliderPopupClientTemplateId="SliderTemplate"
+            
+          TreeLineImagesFolderUrl="/sitecore/shell/themes/standard/componentart/grid/lines/"
+          TreeLineImageWidth="22"
+          TreeLineImageHeight="19"
+            
+          PreExpandOnGroup="false"
+          ImagesBaseUrl="/sitecore/shell/themes/standard/componentart/grid/"
+          IndentCellWidth="22"
+
+          LoadingPanelClientTemplateId="LoadingFeedbackTemplate"
+          LoadingPanelPosition="MiddleCenter"
+            
+          Width="100%" Height="100%" >
+
+                            <Levels>
+                                <GridLevel
+                                  DataKeyField="scGridID"
+                                  ShowTableHeading="false"
+                                  ShowSelectorCells="false"
+                                  RowCssClass="Row"
+                                  ColumnReorderIndicatorImageUrl="reorder.gif"
+                                  DataCellCssClass="DataCell"
+                                  HeadingCellCssClass="HeadingCell"
+                                  HeadingCellHoverCssClass="HeadingCellHover"
+                                  HeadingCellActiveCssClass="HeadingCellActive"
+                                  HeadingRowCssClass="HeadingRow"
+                                  HeadingTextCssClass="HeadingCellText"
+                                  SelectedRowCssClass="SelectedRow"
+                                  GroupHeadingCssClass="GroupHeading"
+                                  SortAscendingImageUrl="asc.gif"
+                                  SortDescendingImageUrl="desc.gif"
+                                  SortImageWidth="13"
+                                  SortImageHeight="13" runat="server">
+                                    <Columns>
+                                        <GridColumn DataField="scGridID" Visible="false" IsSearchable="false" runat="server" />
+                                        <GridColumn DataField="Name" Visible="false" IsSearchable="false" runat="server" />
+                                        <GridColumn DataField="DisplayName" AllowSorting="false" AllowGrouping="false" IsSearchable="true" SortedDataCellCssClass="SortedDataCell" HeadingText="Role" runat="server" />
+                                    </Columns>
+                                </GridLevel>
+                            </Levels>
+
+                            <ClientTemplates>
+                                <ClientTemplate Id="LoadingFeedbackTemplate" runat="server">
+                                    <table cellspacing="0" cellpadding="0" border="0">
+                                        <tr>
+                                            <td style="font-size:10px;">
+                                                <Literal Text="Loading..." runat="server" />;
+                                            </td>
+                                            <td>
+                                                <img src="/sitecore/shell/themes/standard/componentart/grid/spinner.gif" width="16" height="16" border="0" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </ClientTemplate>
+
+                                <ClientTemplate Id="SliderTemplate" runat="server">
+                                    <table class="SliderPopup" cellspacing="0" cellpadding="0" border="0">
+                                        <tr>
+                                            <td>
+                                                <div style="padding:4px;font:8pt tahoma;white-space:nowrap;overflow:hidden">## DataItem.GetMember('Name').Value ##</div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td style="height:14px;background-color:#666666;padding:1px 8px 1px 8px;color:white">
+                                                ## DataItem.PageIndex + 1 ## / ## Roles.PageCount ##
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </ClientTemplate>
+                            </ClientTemplates>
+                        </Grid>
+                    
+                        </Scrollbox>
 
 				</GridPanel>
 				<Border Background="white">

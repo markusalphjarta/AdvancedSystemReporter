@@ -2,7 +2,7 @@
 version: 1
 id: {D7DC927B-755A-4BCA-ADB1-71771792F042}
 database: core
-path: /sitecore/content/Applications/Advanced System Reporter/Menu/Export/XML
+path: /sitecore/content/Applications/Advanced System Reporter/Ribbon/Export/XML
 parent: {B4D22B19-98F6-4C96-AA47-7C41892FA280}
 name: XML
 master: {00000000-0000-0000-0000-000000000000}
