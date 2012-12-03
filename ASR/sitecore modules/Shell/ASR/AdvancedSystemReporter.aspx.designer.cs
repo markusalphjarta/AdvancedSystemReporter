@@ -49,31 +49,22 @@ namespace ASR.sitecore_modules.Shell.ASR {
         protected global::ComponentArt.Web.UI.Grid DataGrid;
         
         /// <summary>
-        /// CommentTemplate control.
+        /// IconTemplate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::ComponentArt.Web.UI.GridServerTemplate CommentTemplate;
+        protected global::ComponentArt.Web.UI.GridServerTemplate IconTemplate;
         
         /// <summary>
-        /// FullNameTemplate control.
+        /// CommonTemplate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::ComponentArt.Web.UI.GridServerTemplate FullNameTemplate;
-        
-        /// <summary>
-        /// LocalNameTemplate control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::ComponentArt.Web.UI.ClientTemplate LocalNameTemplate;
+        protected global::ComponentArt.Web.UI.GridServerTemplate CommonTemplate;
         
         /// <summary>
         /// LoadingFeedbackTemplate control.

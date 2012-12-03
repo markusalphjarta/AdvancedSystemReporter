@@ -57,7 +57,7 @@
     
       <tr>
         <td id="GridCell" height="100%" valign="top" style="background:#e9e9e9">
-          <sc:Border runat="server" ID="GridContainer">
+          <sc:Border runat="server" ID="GridContainer" Height="100%">
           <ca:Grid id="DataGrid" 
             AutoFocusSearchBox="false"
             RunningMode="Callback" 
@@ -133,42 +133,31 @@
                 SortImageHeight="13">
                 <Columns>
                   <ca:GridColumn DataField="scGridID" Visible="false" IsSearchable="false" />
-                  <ca:GridColumn DataField="Name" Visible="false" IsSearchable="false" />
-                  <ca:GridColumn DataField="Portrait" Visible="false" IsSearchable="false" />
-                  <ca:GridColumn DataField="LocalName" AllowSorting="false" IsSearchable="true" AllowGrouping="false" SortedDataCellCssClass="SortedDataCell" HeadingText="User Name" DataCellClientTemplateId="LocalNameTemplate"/>
-                  <ca:GridColumn DataField="Domain" AllowSorting="false" IsSearchable="false" AllowGrouping="false" SortedDataCellCssClass="SortedDataCell" HeadingText="Domain" />
-                  <ca:GridColumn DataField="DisplayName" AllowSorting="false" IsSearchable="false" AllowGrouping="false" SortedDataCellCssClass="SortedDataCell" HeadingText="Fully Qualified Name" />                  
-                  <ca:GridColumn DataField="Profile.FullName" AllowSorting="false" IsSearchable="false" AllowGrouping="false" SortedDataCellCssClass="SortedDataCell" HeadingText="Full Name" DataCellServerTemplateId="FullNameTemplate" />
-                  <ca:GridColumn DataField="Profile.Email" AllowSorting="false" IsSearchable="false" AllowGrouping="false" SortedDataCellCssClass="SortedDataCell" HeadingText="Email" />
-                  <ca:GridColumn DataField="Profile.Comment" AllowSorting="false" IsSearchable="false" AllowGrouping="false" SortedDataCellCssClass="SortedDataCell" HeadingText="Comment" DataCellServerTemplateId="CommentTemplate" />
-                  <ca:GridColumn DataField="Profile.ClientLanguage" AllowSorting="false" IsSearchable="false" AllowGrouping="false" SortedDataCellCssClass="SortedDataCell" HeadingText="Language" />
-                  <ca:GridColumn DataField="Profile.State" AllowSorting="false" IsSearchable="false" AllowGrouping="false" SortedDataCellCssClass="SortedDataCell" HeadingText="Locked" />
-                  <ca:GridColumn DataField="Profile.PortraitFullPath"  Visible="false" IsSearchable="false" />
+                  <ca:GridColumn  DataField="Icon" Visible="true" IsSearchable="false"  DataCellServerTemplateId="IconTemplate"/>                                                  
                 </Columns>
               </ca:GridLevel>
             </Levels>
-            
+             
             <ClientEvents>
               <ItemDoubleClick EventHandler="Users_onDoubleClick" />
             </ClientEvents>
             <ServerTemplates>
-              <ca:GridServerTemplate ID="CommentTemplate">
+              <ca:GridServerTemplate ID="IconTemplate">
                 <Template>
-                  <asp:Label ID="CommentLabel" runat="server" />
+                  <asp:Label runat="server" ID="LabelIcon"/>
                 </Template>
               </ca:GridServerTemplate>
-              <ca:GridServerTemplate ID="FullNameTemplate">
+              <ca:GridServerTemplate ID="CommonTemplate">
                 <Template>
-                  <asp:Label ID="FullNameLabel" runat="server" />
+                  <asp:Label ID="CommonLabel" runat="server" />
                 </Template>
               </ca:GridServerTemplate>
 
             </ServerTemplates>
             <ClientTemplates>
-              <ca:ClientTemplate Id="LocalNameTemplate">
-                <img src="## DataItem.GetMember('Profile.PortraitFullPath').Value ##" width="16" height="16" border="0" alt="" align="absmiddle"/>
-                ## DataItem.GetMember('LocalName').Value ##
-              </ca:ClientTemplate>              
+             <%-- <ca:ClientTemplate Id="IconTemplate">
+                <img src="## DataItem.GetMember('Icon').Value ##" width="16" height="16" border="0" alt="" align="absmiddle"/>
+              </ca:ClientTemplate>     --%>         
               <ca:ClientTemplate Id="LoadingFeedbackTemplate">
                   <table cellspacing="0" cellpadding="0" border="0">
                   <tr>
