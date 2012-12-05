@@ -28,8 +28,8 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>.\Debug\</OutputPath>
     <RecursiveDeployAction>Ignore</RecursiveDeployAction>
-    <SitecoreDeployFolder>D:\Websites\ASR\Website</SitecoreDeployFolder>
-    <SitecoreWebUrl>http://asr</SitecoreWebUrl>
+    <SitecoreDeployFolder>D:\Websites\ASRtest\Website</SitecoreDeployFolder>
+    <SitecoreWebUrl>http://asrtest</SitecoreWebUrl>
     <SitecoreAccessGuid>73fd56e6-2f46-48c0-82b3-18a1433fa33a</SitecoreAccessGuid>
     <InstallSitecoreConnector>True</InstallSitecoreConnector>
   </PropertyGroup>
@@ -96,6 +96,16 @@
       <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
     </SitecoreItem>
+    <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Home.item">
+      <Icon>/temp/IconCache/Applications/32x32/Document.png</Icon>
+      <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
+      <ItemDeployment>AlwaysUpdate</ItemDeployment>
+    </SitecoreItem>
+    <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Home\Export.item">
+      <Icon>/temp/IconCache/Applications/32x32/Document.png</Icon>
+      <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
+      <ItemDeployment>AlwaysUpdate</ItemDeployment>
+    </SitecoreItem>
     <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Home\Export\Export.item">
       <Icon>/temp/IconCache/Applications/32x32/transform.png</Icon>
       <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
@@ -116,16 +126,6 @@
       <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
     </SitecoreItem>
-    <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Home.item">
-      <Icon>/temp/IconCache/Applications/32x32/Document.png</Icon>
-      <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
-      <ItemDeployment>AlwaysUpdate</ItemDeployment>
-    </SitecoreItem>
-    <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Home\Export.item">
-      <Icon>/temp/IconCache/Applications/32x32/Document.png</Icon>
-      <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
-      <ItemDeployment>AlwaysUpdate</ItemDeployment>
-    </SitecoreItem>
     <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Home\Report.item">
       <Icon>/temp/IconCache/Applications/32x32/Document.png</Icon>
       <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
@@ -133,6 +133,16 @@
     </SitecoreItem>
     <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Home\Report\Open.item">
       <Icon>/temp/IconCache/Applications/32x32/folder_out.png</Icon>
+      <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
+      <ItemDeployment>AlwaysUpdate</ItemDeployment>
+    </SitecoreItem>
+    <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Home\Report\Save to Desktop.item">
+      <Icon>/temp/IconCache/Applications/32x32/magic-wand.png</Icon>
+      <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
+      <ItemDeployment>AlwaysUpdate</ItemDeployment>
+    </SitecoreItem>
+    <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Home\Report\Save.item">
+      <Icon>/temp/IconCache/Applications/32x32/disk_blue.png</Icon>
       <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
     </SitecoreItem>
@@ -148,26 +158,6 @@
     </SitecoreItem>
     <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Home\Run\Run.item">
       <Icon>/temp/IconCache/Applications/32x32/gears_run.png</Icon>
-      <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
-      <ItemDeployment>AlwaysUpdate</ItemDeployment>
-    </SitecoreItem>
-    <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Home\Report\Save to Desktop.item">
-      <Icon>/temp/IconCache/Applications/32x32/magic-wand.png</Icon>
-      <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
-      <ItemDeployment>AlwaysUpdate</ItemDeployment>
-    </SitecoreItem>
-    <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Home\Report\Save.item">
-      <Icon>/temp/IconCache/Applications/32x32/disk_blue.png</Icon>
-      <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
-      <ItemDeployment>AlwaysUpdate</ItemDeployment>
-    </SitecoreItem>
-    <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Toolbar divider 2.item">
-      <Icon>/temp/IconCache/Control/16x16/bar_hor_b.png</Icon>
-      <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
-      <ItemDeployment>AlwaysUpdate</ItemDeployment>
-    </SitecoreItem>
-    <SitecoreItem Include="sitecore\content\Applications\Advanced System Reporter\Ribbon\Toolbar divider.item">
-      <Icon>/temp/IconCache/Control/16x16/bar_hor_b.png</Icon>
       <ChildItemSynchronization>KeepAllChildrenSynchronized</ChildItemSynchronization>
       <ItemDeployment>AlwaysUpdate</ItemDeployment>
     </SitecoreItem>

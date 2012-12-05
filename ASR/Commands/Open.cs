@@ -4,14 +4,16 @@ using CorePoint.DomainObjects.SC;
 using ASR.DomainObjects;
 using Sitecore.Data.Items;
 using Sitecore.Data;
+using Sitecore.Web.UI.WebControls;
+using Sitecore.Web.UI.XamlSharp.Continuations;
 
 namespace ASR.Commands
 {
-    class Open : Command
+    class Open : Command, ISupportsContinuation
     {
         public override void Execute(CommandContext context)
         {
-            Sitecore.Context.ClientPage.Start(this, "Start");
+             ContinuationManager.Current.Start(this, "Start");
         }
 
         public void Start(ClientPipelineArgs args)
@@ -45,16 +47,14 @@ namespace ASR.Commands
                 switch(item.Template.Key)
                 {
                     case "report":
-                    SCDirector director = new SCDirector(Current.Context.Settings.ConfigurationDatabase, "en");
+                    //SCDirector director = new SCDirector(Current.Context.Settings.ConfigurationDatabase, "en");
 
-                    ReportItem rItem = director.LoadObjectFromItem<ReportItem>(item);
-                    if (rItem != null)
+                    //ReportItem rItem = director.LoadObjectFromItem<ReportItem>(item);
+                    //if (rItem != null)
                     {
-                        Current.Context.ReportItem = rItem;
-                        Current.Context.Report = null;
-                        Sitecore.Context.ClientPage.SendMessage(this, "ASR.MainForm:update");
-                  
-                        // Sitecore.Context.ClientPage.SendMessage(this, "ASR.MainForm:toolbarupdate");
+                        //Current.Context.ReportItem = rItem;
+                        //Current.Context.Report = null;
+                        AjaxScriptManager.Current.Dispatch(string.Format("asr:refreshgrid(id={0})",item.ID));
                     }
                         break;
                    

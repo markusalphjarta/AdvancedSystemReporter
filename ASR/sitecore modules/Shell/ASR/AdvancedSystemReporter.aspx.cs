@@ -5,15 +5,22 @@ using ASR.DomainObjects;
 using ASR.Interface;
 using ComponentArt.Web.UI;
 using Sitecore;
+using Sitecore.Data;
+using Sitecore.Data.Items;
 using Sitecore.Diagnostics;
 using Sitecore.Extensions;
 using Sitecore.Security.Accounts;
 using Sitecore.Shell.Framework.Commands;
+using Sitecore.Web;
 using Sitecore.Web.UI;
 using Sitecore.Web.UI.Grids;
+using Sitecore.Web.UI.Sheer;
 using Sitecore.Web.UI.WebControls;
+using Sitecore.Web.UI.WebControls.Ribbons;
+using Sitecore.Web.UI.XamlSharp.Ajax;
 using Image = System.Web.UI.WebControls.Image;
 using System.Linq;
+
 using Sitecore.Extensions.StringExtensions;
 
 namespace ASR.sitecore_modules.Shell.ASR
@@ -30,8 +37,7 @@ namespace ASR.sitecore_modules.Shell.ASR
             {
                 return ((!this.Page.IsPostBack && (base.Request.QueryString["Cart_Users_Callback"] != "yes")) || (this.Page.Request.Params["requireRebind"] == "true"));
             }
-        }
- 
+        } 
 
         protected override void OnInit(EventArgs e)
         {
@@ -40,50 +46,78 @@ namespace ASR.sitecore_modules.Shell.ASR
             Sitecore.Context.State.DataBind = false;
        //     this.DataGrid.ItemDataBound += new Grid.ItemDataBoundEventHandler(this.Users_ItemDataBound);
             this.DataGrid.ItemContentCreated += new Grid.ItemContentCreatedEventHandler(this.UsersItemContentCreated);
-            //Client.AjaxScriptManager.OnExecute += new AjaxScriptManager.ExecuteDelegate(Sitecore.Shell.Applications.Security.UserManager.UserManager.Current_OnExecute);
-        }
-
-      
+            Client.AjaxScriptManager.OnExecute += new AjaxScriptManager.ExecuteDelegate(Current_OnExecute);           
+        }      
 
         protected override void OnLoad(EventArgs e)
         {
             Assert.ArgumentNotNull(e, "e");
             base.OnLoad(e);
 
+            
 
             if (!IsPostBack)
             {
-                var testqs = "id={05F200B8-27F0-4B11-8FDB-088BE6554782}&e12d5fd8-1296-466f-ac59-b808e47bf1e7^Age=-1";
-                Current.Context.ReportItem = ReportItem.CreateFromParameters(testqs);
-                Current.Context.Report =
-                   Current.Context.ReportItem.TransformToReport(Current.Context.Report);
-                Current.Context.Report.Run();                
-
-                var results = Current.Context.Report.GetResultElements();
-
-                var first = results.FirstOrDefault();
-                if(first != null)
-                {
-                    foreach(var cName in first.GetColumnNames())
-                    {
-                var column = new GridColumn() {DataField =cName, DataCellServerTemplateId = "CommonTemplate"};
-                DataGrid.Levels[0].Columns.Add(column);            
-                    }                
-                }                                
-                //   var managedUsers = Sitecore.Context.User.Delegation.GetManagedUsers();
-
-                ComponentArtGridHandler<DisplayElement>.Manage(this.DataGrid, new GridSource<DisplayElement>(results), this.RebindRequired);
-                this.DataGrid.LocalizeGrid(); 
+              //  var testqs = "id={05F200B8-27F0-4B11-8FDB-088BE6554782}&e12d5fd8-1296-466f-ac59-b808e47bf1e7^Age=-1";
+              if (Current.Context.ReportItem != null)
+              {
+                //  RunReport();
+                //  PopulateGrid();
+              }
             }
         }
 
-        
+        private static void RunReport()
+        {
+            Current.Context.Report =
+                Current.Context.ReportItem.TransformToReport(Current.Context.Report);
+            Current.Context.Report.Run();
+        }
+
+        private void PopulateGrid()
+        {
+            var results = Current.Context.Report.GetResultElements();
+
+            var first = results.FirstOrDefault();
+            DataGrid.Levels[0].Columns.Clear();
+
+            DataGrid.Levels[0].Columns.Add(new GridColumn() {Visible = false, IsSearchable = false, DataField = "scGridID"});
+            DataGrid.Levels[0].Columns.Add(new GridColumn()
+                {
+                    Visible = true,
+                    IsSearchable = false,
+                    DataField = "Icon",
+                    DataCellServerTemplateId = "IconTemplate"
+                });
+
+            if (first != null)
+            {
+                foreach (var cName in first.GetColumnNames())
+                {
+                    DataGrid.Levels[0].Columns.Add(new GridColumn()
+                        {
+                            DataField = cName,
+                            DataCellServerTemplateId = "CommonTemplate"
+                        });
+                }
+            }
+            //   var managedUsers = Sitecore.Context.User.Delegation.GetManagedUsers();
+
+            ComponentArtGridHandler<DisplayElement>.Manage(this.DataGrid, new GridSource<DisplayElement>(results),
+                                                           this.RebindRequired);
+            this.DataGrid.LocalizeGrid();
+        }
+
+
         public CommandContext GetCommandContext()
         {
             CommandContext context = new CommandContext();
 
-            var itemNotNull = Client.GetItemNotNull("/sitecore/content/Applications/Advanced System Reporter/Ribbon", Client.CoreDatabase);
+            var itemNotNull = Client.CoreDatabase.GetItem("/sitecore/content/Applications/Advanced System Reporter/Ribbon");
             context.RibbonSourceUri = itemNotNull.Uri;
+
+            context.Parameters["reportname"] = Current.Context.ReportItem != null ? Current.Context.ReportItem.Name : "noname";
+            context.Parameters["reportid"] = reportid; 
             //string selectedValue = GridUtil.GetSelectedValue("Users");
             //string str2 = string.Empty;
             //ListString str3 = new ListString(selectedValue);
@@ -126,6 +160,26 @@ namespace ASR.sitecore_modules.Shell.ASR
                     }
                 }    
             }                                    
-        }          
+        }
+
+        private string reportid; 
+        private  void Current_OnExecute([NotNull] object sender, [NotNull] AjaxCommandEventArgs args)
+        {
+            Assert.ArgumentNotNull(sender, "sender");
+            Assert.ArgumentNotNull(args, "args");
+       
+            if (args.Name == "asr:refreshgrid")
+            {
+              reportid = args.Parameters["id"];
+              
+              //  RunReport();
+              //  PopulateGrid();
+                
+                SheerResponse.Redraw();
+                SheerResponse.SetInnerHtml("RibbonContainer", HtmlUtil.RenderControl(Ribbon));
+              SheerResponse.Eval("refresh()");
+              
+            }
+        }
     }
 }

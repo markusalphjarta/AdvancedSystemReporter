@@ -18,7 +18,7 @@
     <script type="text/javascript" language="javascript">
 
         function Users_onDoubleClick(sender, eventArgs) {
-            scForm.postRequest("", "", "", "usermanager:edituser");
+           // scForm.postRequest("", "", "", "usermanager:edituser");
         }
 
         function OnResize() {
@@ -29,15 +29,16 @@
             grid.style.height = doc.getHeight() - ribbon.getHeight() + 'px';
             grid.style.width = doc.getWidth() + 'px';
 
-            Users.render();
+            DataGrid.render();
 
             /* re-render again after some "magic amount of time" - without this second re-render grid doesn't pick correct width sometimes */
-           setTimeout("Users.render()", 150);
+           setTimeout("DataGrid.render()", 150);
         }
 
         function refresh() {
-          DataGrid.scHandler.refresh();
-       }
+            DataGrid.scHandler.refresh();
+      
+        }
 
        window.onresize = OnResize;
   
