@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using ASR.Interface;
 using System.Linq;
 using System;
 using System.Collections;
@@ -11,26 +10,24 @@ namespace ASR.Interface
 {
 	public class Report
 	{
-		private Dictionary<string, FilterItem> filters;
-		private Dictionary<string, ScannerItem> scanners;
-		private Dictionary<string, ViewerItem> viewers;
+		private readonly Dictionary<string, FilterItem> filters;
+		private readonly Dictionary<string, ScannerItem> scanners;
+		private readonly Dictionary<string, ViewerItem> viewers;
 
 		// buffer for the result of the scanner
-		private ArrayList scannerResults;
+		private ArrayList _scannerResults;
 
 		// buffer for filtered results i.e. scannerResults => Filter()
-		private ArrayList results;
+		private ArrayList _results;
 
 		IEnumerable<BaseViewer> _viewers;
 		public IEnumerable<BaseViewer> Viewers
 		{
-			get
-			{
-				if (_viewers == null)
-				{
-					_viewers = viewers.Select(v => BaseViewer.Create(v.Value.FullType, v.Value.ReplacedAttributes, v.Value.ColumnsXml)).ToList();
-				}
-				return _viewers;
+			get {
+			    return _viewers ??
+			           (_viewers =
+			            viewers.Select(v => BaseViewer.Create(v.Value.FullType, v.Value.ReplacedAttributes, v.Value.ColumnsXml))
+			                   .ToList());
 			}
 		}
 
@@ -45,7 +42,7 @@ namespace ASR.Interface
 			{
 				if (_displayElements == null)
 				{
-					var tmp = results.OfType<object>().Select(IntializeDisplayElement);
+					var tmp = _results.OfType<object>().Select(IntializeDisplayElement);
 					tmp = Sort(tmp);
 					_displayElements = tmp.ToList();
 				}
@@ -68,7 +65,7 @@ namespace ASR.Interface
 
             foreach (string columnName in SortColumns.Keys)
             {
-                Func<DisplayElement, object> columnValue = null;
+                Func<DisplayElement, object> columnValue;
                 string sortOptions = SortColumns[columnName];
                 // need to copy the column name, or it executes against the wrong column when we actually do the sort
                 string copyOfColumnName = columnName;
@@ -107,12 +104,9 @@ namespace ASR.Interface
 				{
 					return DateUtil.IsoDateToDateTime(value);
 				}
-				else
-				{
-					DateTime result;
-					DateTime.TryParse(value, out result);
-					return result;
-				}
+			    DateTime result;
+			    DateTime.TryParse(value, out result);
+			    return result;
 			}
 			return null;
 		}
@@ -129,39 +123,34 @@ namespace ASR.Interface
 
 		public Report()
 		{
-			this.scanners = new Dictionary<string, ScannerItem>();
-			this.viewers = new Dictionary<string, ViewerItem>();
-			this.filters = new Dictionary<string, FilterItem>();
+			scanners = new Dictionary<string, ScannerItem>();
+			viewers = new Dictionary<string, ViewerItem>();
+			filters = new Dictionary<string, FilterItem>();
 		}
 
-		/// <summary>
-		/// Add a filter to the report
-		/// </summary>
-		/// <param name="name">Name of the filter</param>
-		/// <param name="type">Type of the class in the usual format: Fully Qualified Class Name, Assembly</param>
-		/// <param name="parameters">Parameters as pipe separated: key=value|key2=value2</param>
-		public void AddFilter(FilterItem filter)
+	    /// <summary>
+	    /// Add a filter to the report
+	    /// </summary>
+	    public void AddFilter(FilterItem filter)
 		{
-			if (!filters.ContainsKey(filter.Id.ToString()))
+			if (!filters.ContainsKey(filter.ID.ToString()))
 			{
-				filters.Add(filter.Id.ToString(), filter);
+				filters.Add(filter.ID.ToString(), filter);
 				FlushFilterCache();
 			}
 		}
 
-		/// <summary>
-		/// Add a Scanner to the report
-		/// </summary>
-		/// <param name="name">Name of the scanner</param>
-		/// <param name="type">Type of the class in the usual format: Fully Qualified Class Name, Assembly</param>
-		/// <param name="parameters">Parameters as pipe separated: key=value|key2=value2</param>
-		public void AddScanner(ScannerItem scanner)
+	    /// <summary>
+	    /// Add a scanner to the report
+	    /// </summary>
+	    /// <param name="scanner"></param>
+	    public void AddScanner(ScannerItem scanner)
 		{
 			Sitecore.Diagnostics.Assert.ArgumentNotNull(scanner, "scanner");
 
-			if (!scanners.ContainsKey(scanner.Id.ToString()))
+			if (!scanners.ContainsKey(scanner.ID.ToString()))
 			{
-				scanners.Add(scanner.Id.ToString(), scanner);
+				scanners.Add(scanner.ID.ToString(), scanner);
 				FlushCache();
 			}
 		}
@@ -169,16 +158,14 @@ namespace ASR.Interface
 		/// <summary>
 		/// Add a viewer to the report
 		/// </summary>
-		/// <param name="name">Name of the viewer</param>
-		/// <param name="type">Type of the class in the usual format: Fully Qualified Class Name, Assembly</param>
-		/// <param name="parameters">Parameters as pipe separated: key=value|key2=value2</param>
+		/// <param name="viewer"></param>
 		public void AddViewer(ViewerItem viewer)
 		{
 			Sitecore.Diagnostics.Assert.ArgumentNotNull(viewer, "viewer");
 
-			if (!viewers.ContainsKey(viewer.Id.ToString()))
+			if (!viewers.ContainsKey(viewer.ID.ToString()))
 			{
-				viewers.Add(viewer.Id.ToString(), viewer);
+				viewers.Add(viewer.ID.ToString(), viewer);
 			}
 		}
 
@@ -187,7 +174,7 @@ namespace ASR.Interface
 		/// </summary>
 		public void FlushCache()
 		{
-			scannerResults = null;
+			_scannerResults = null;
 		}
 
 		/// <summary>
@@ -195,7 +182,7 @@ namespace ASR.Interface
 		/// </summary>
 		private void FlushFilterCache()
 		{
-			results = null;
+			_results = null;
 		}
 
 		/// <summary>
@@ -204,14 +191,14 @@ namespace ASR.Interface
 		/// <param name="parameters">Not used. Only so it can be called as a ProgressBoxMethod delegate</param>
 		public void Run(params object[] parameters)
 		{
-			if (scannerResults == null)
+			if (_scannerResults == null)
 			{
-				scannerResults = new ArrayList();
+				_scannerResults = new ArrayList();
 				foreach (var scanner in scanners)
 				{
 					BaseScanner oScanner = BaseScanner.Create(scanner.Value.FullType, scanner.Value.ReplacedAttributes);
 					//TODO throw exception if null??
-					scannerResults.AddRange(oScanner.Scan());
+					_scannerResults.AddRange(oScanner.Scan());
 				}
 			}
 			Filter();			
@@ -223,23 +210,15 @@ namespace ASR.Interface
 		public void Filter()
 		{
 			IEnumerable<BaseFilter> oFilters = filters.Select(p => BaseFilter.Create(p.Value.FullType, p.Value.ReplacedAttributes)).ToList();
-			results = new ArrayList();
+			_results = new ArrayList();
 
-			foreach (var element in scannerResults)
+			foreach (var element in _scannerResults)
 			{
-				bool add = true;
-				foreach (var filter in oFilters)
-				{
-					if (!filter.Filter(element))
-					{
-						add = false;
-						break;
-					}
-				}
-				if (add)
+				var add = oFilters.All(filter => filter.Filter(element));
+			    if (add)
 				{
 					Sitecore.Diagnostics.Assert.IsNotNull(element, "element is null ");
-					results.Add(element);
+					_results.Add(element);
 				}
 			}
 		}
@@ -250,9 +229,9 @@ namespace ASR.Interface
 		/// <returns>All the results from running the report</returns>
 		public IEnumerable<DisplayElement> GetResultElements()
 		{
-			if (results == null)
+			if (_results == null)
 				Run();
-			return GetResultElements(0, results.Count);
+			return GetResultElements(0, _results.Count);
 		}
 
 		/// <summary>
@@ -263,7 +242,7 @@ namespace ASR.Interface
 		/// <returns>Results of the report</returns>
 		public IEnumerable<DisplayElement> GetResultElements(int start, int count)
 		{
-			int end = System.Math.Min(start + count, ResultsCount());
+			int end = Math.Min(start + count, ResultsCount());
 
 			return DisplayElements.Where((t, i) => (start <= i) && (i < end));
 		}
@@ -274,9 +253,9 @@ namespace ASR.Interface
 		/// <returns>Number of results or -1 if report has not been run yet.</returns>
 		public int ResultsCount()
 		{
-			if (results == null)
+			if (_results == null)
 				return -1;
-			return results.Count;
+			return _results.Count;
 		}
 
 	  

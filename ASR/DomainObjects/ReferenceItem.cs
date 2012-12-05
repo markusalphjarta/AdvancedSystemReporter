@@ -1,61 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Web;
-using CorePoint.DomainObjects;
-using System.Reflection;
 using System.Text.RegularExpressions;
+using Sitecore.Data.Items;
+using Sitecore.Security.Accounts;
 
 namespace ASR.DomainObjects
 {
-
-	[Template("System/ASR/Reference")]
-	public class ReferenceItem : CorePoint.DomainObjects.SC.StandardTemplate
+    public class ReferenceItem : BaseItem
 	{
-        private string _currentuser;
-	    public ReferenceItem()
+	    
+        private readonly User _currentuser;
+
+	    public ReferenceItem(Item innerItem) : base(innerItem)
 	    {
-	        _currentuser = Sitecore.Context.User.Name;
+	        _currentuser = Sitecore.Context.User;
 	    }
 
-	    [Field("assembly")]
+	    
 		public string Assembly
 		{
-			get;
-			set;
+		    get { return InnerItem["Assembly"]; }
 		}
-		[Field("class")]
-		public string Class
+		
+        public string Class
 		{
-			get;
-			set;
+            get { return InnerItem["Class"]; }
 		}
-		[Field("attributes")]
+		
 		public string Attributes
 		{
-			get;
-			set;
-		}
+            get { return InnerItem["Attributes"]; }
 
+		}
 
 		public string ReplacedAttributes
 		{
 			get
 			{
-				string _replacedAttributes = Attributes;
+				string replacedAttributes = Attributes;
 				foreach (var pi in Parameters)
 				{
 					string tag = string.Concat('{', pi.Name, '}');
-					_replacedAttributes = _replacedAttributes.Replace(tag, pi.Value);
+					replacedAttributes = replacedAttributes.Replace(tag, pi.Value);
 				}
 
-                if (_replacedAttributes.Contains("$"))
+                if (replacedAttributes.Contains("$"))
                 {
-                    _replacedAttributes = Util.MakeDateReplacements(_replacedAttributes);
-                    _replacedAttributes = _replacedAttributes.Replace("$sc_currentuser", _currentuser); 
+                    replacedAttributes = Util.MakeDateReplacements(replacedAttributes);
+                    replacedAttributes = replacedAttributes.Replace("$sc_currentuser", _currentuser.ToString()); 
                 }
-			    return _replacedAttributes;
+			    return replacedAttributes;
 			}
 		}
 		public string FullType
@@ -95,32 +90,32 @@ namespace ASR.DomainObjects
 			{
 				if (_parameters == null)
 				{
-					makeParameterSet();
+					MakeParameterSet();
 				}
 
 				return _parameters.Count > 0;
 			}
 		}
 
-		private HashSet<ParameterItem> _parameters = null;
+		private HashSet<ParameterItem> _parameters;
 		public IEnumerable<ParameterItem> Parameters
 		{
 			get
 			{
 				if (_parameters == null || _parameters.Count == 0)
 				{
-					makeParameterSet();
+					MakeParameterSet();
 				}
 				return _parameters;
 			}
 		}
 
-		private void makeParameterSet()
+		private void MakeParameterSet()
 		{
 			_parameters = new HashSet<ParameterItem>();
 			foreach (var tag in extractParameters(Attributes))
 			{
-				ParameterItem pi = findItem(tag);
+				ParameterItem pi = FindItem(tag);
 				if (pi != null)
 				{
 					_parameters.Add(pi);
@@ -128,17 +123,17 @@ namespace ASR.DomainObjects
 			}
 		}
 
-		private ParameterItem findItem(string name)
+		private ParameterItem FindItem(string name)
 		{
 			string path = string.Concat(Settings.Instance.ParametersFolder, "/", name);
-            
-			return this.Director.GetObjectByIdentifier<ParameterItem>(path);
+
+		    return new ParameterItem(InnerItem.Database.GetItem(path));
 		}
 
 		private IEnumerable<string> extractParameters(string st)
 		{
-			List<string> tags = new List<string>();
-			Regex r = new Regex(@"\{(\w*)\}");
+			var tags = new List<string>();
+			var r = new Regex(@"\{(\w*)\}");
 			Match m = r.Match(st);
 
 			while (m.Success)

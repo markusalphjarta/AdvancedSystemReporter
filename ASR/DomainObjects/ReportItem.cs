@@ -1,245 +1,218 @@
 ﻿using System;
 using System.Collections.Generic;
-using CorePoint.DomainObjects;
 using Sitecore.Data;
 using System.Linq;
 using ASR.Interface;
 using Sitecore.Collections;
+using Sitecore.Data.Fields;
+using Sitecore.Data.Items;
 
 namespace ASR.DomainObjects
 {
-  using System.Collections.Specialized;
+    using System.Collections.Specialized;   
+    using Sitecore;
+    using Sitecore.Diagnostics;
 
-  using CorePoint.DomainObjects.SC;
+    [Serializable]
 
-  using Sitecore;
-  using Sitecore.Diagnostics;
-
-  [Serializable]
-  [Template("System/ASR/Report")]
-  public class ReportItem : CorePoint.DomainObjects.SC.StandardTemplate
-  {
-
-    [Field("__icon")]
-    public string Icon
+    public class ReportItem : BaseItem
     {
-      get;
-      set;
-    }
-
-    [Field("scanners")]
-    private List<Guid> _scanner
-    {
-      get;
-      set;
-    }
-
-    public ScannerItem[] _scanners;
-    public IEnumerable<ScannerItem> Scanners
-    {
-      get
-      {
-        if (_scanners == null)
+        public ReportItem(Item innerItem)
+            : base(innerItem)
         {
-          _scanners = _scanner.ConvertAll<ScannerItem>(id => this.Director.GetObjectByIdentifier<ScannerItem>(id)).ToArray();
         }
-        return _scanners;
-      }
-    }
 
-    [Field("viewers")]
-    private List<Guid> _viewer
-    {
-      get;
-      set;
-    }
-
-    private ViewerItem[] _viewers = null;
-    public IEnumerable<ViewerItem> Viewers
-    {
-      get
-      {
-        if (_viewers == null)
+        public IEnumerable<ScannerItem> _scanners;
+        public IEnumerable<ScannerItem> Scanners
         {
-          _viewers = _viewer.ConvertAll<ViewerItem>(g => this.Director.GetObjectByIdentifier<ViewerItem>(g)).ToArray();
+            get
+            {
+                if (_scanners == null)
+                {
+                    MultilistField scanners = InnerItem.Fields["Scanners"];
+                    _scanners = scanners.GetItems().Select(i => new ScannerItem(i));
+                }
+                return _scanners;
+            }
         }
-        return _viewers;
-      }
-    }
 
-    [Field("commands")]
-    public List<Guid> _Commands
-    {
-      get;
-      set;
-    }
-    private CommandItem[] _commands;
-    public IEnumerable<CommandItem> Commands
-    {
-
-      get
-      {
-        if (_commands == null)
+        private IEnumerable<ViewerItem> _viewers;
+        public IEnumerable<ViewerItem> Viewers
         {
-          _commands = _Commands.ConvertAll<CommandItem>(g => this.Director.GetObjectByIdentifier<CommandItem>(g)).ToArray();
+            get
+            {
+                if (_viewers == null)
+                {
+                    MultilistField viewers = InnerItem.Fields["Viewers"];
+                    _viewers = viewers.GetItems().Select(i => new ViewerItem(i));
+                }
+                return _viewers;
+            }
         }
-        return _commands;
-      }
-    }
 
-    [Field("filters")]
-    public List<Guid> _Filters
-    {
-      get;
-      set;
-    }
-    private FilterItem[] _filters;
-    public IEnumerable<FilterItem> Filters
-    {
-      get
-      {
-        if (_filters == null)
+        private IEnumerable<CommandItem> _commands;
+        public IEnumerable<CommandItem> Commands
         {
-          _filters = _Filters.ConvertAll<FilterItem>(g => this.Director.GetObjectByIdentifier<FilterItem>(g)).ToArray();
+
+            get
+            {
+                if (_commands == null)
+                {
+                    MultilistField commands = InnerItem.Fields["Commands"];
+                    _commands = commands.GetItems().Select(i => new CommandItem(i));
+                }
+                return _commands;
+            }
+        }
+
+        private IEnumerable<FilterItem> _filters;
+        public IEnumerable<FilterItem> Filters
+        {
+            get
+            {
+                if (_filters == null)
+                {
+                    MultilistField filters = InnerItem.Fields["Filters"];
+                    _filters = filters.GetItems().Select(i => new FilterItem(i));
+
+                }
+                return _filters;
+            }
+        }
+
+        public string EmailText
+        {
+            get { return InnerItem["email text"]; }
 
         }
-        return _filters;
-      }
-    }
 
-    [Field("email text")]
-    public string EmailText
-    {
-      get;
-      set;
-    }
-    public void RunCommand(string commandname, StringList values)
-    {
-      foreach (var item in Commands)
-      {
-        if (item.Name == commandname)
+        public void RunCommand(string commandname, StringList values)
         {
-          item.Run(values);
-          break;
+            foreach (var item in Commands)
+            {
+                if (item.Name == commandname)
+                {
+                    item.Run(values);
+                    break;
+                }
+            }
         }
-      }
-    }
 
-    private HashSet<ReferenceItem> objects;
+        private HashSet<ReferenceItem> _objects;
 
-    public ReferenceItem FindItem(string name)
-    {
-      if (objects == null)
-      {
-        loadObjects();
-      }
-      return objects.First(ri => ri.Name == name);
-    }
-
-    public ReferenceItem FindItem(Guid name)
-    {
-      if (objects == null)
-      {
-        loadObjects();
-      }
-      return objects.First(ri => ri.Id == name);
-    }
-
-    private void loadObjects()
-    {
-      objects = new HashSet<ReferenceItem>();
-      foreach (var item in Scanners) { objects.Add(item); }
-      foreach (var item in Viewers) { objects.Add(item); }
-      foreach (var item in Filters) { objects.Add(item); }
-    }
-
-    public string SerializeParameters()
-    {
-      return SerializeParameters("^", "&");
-    }
-
-    public string SerializeParameters(string valueSeparator, string parameterSeparator)
-    {
-      System.Collections.Specialized.NameValueCollection nvc =
-          new System.Collections.Specialized.NameValueCollection();
-      nvc.Add("id", new ID(Current.Context.ReportItem.Id).ToString());
-      foreach (var item in Current.Context.ReportItem.Scanners)
-      {
-        foreach (var p in item.Parameters)
+        public ReferenceItem FindItem(string name)
         {
-          nvc.Add(string.Concat(item.Id, valueSeparator, p.Name), p.Value);
+            if (_objects == null)
+            {
+                LoadObjects();
+            }
+            return _objects.First(ri => ri.Name == name);
         }
-      }
-      foreach (var item in Current.Context.ReportItem.Filters)
-      {
-        foreach (var p in item.Parameters)
+
+        public ReferenceItem FindItem(ID id)
         {
-          nvc.Add(string.Concat(item.Id, valueSeparator, p.Name), p.Value);
+            if (_objects == null)
+            {
+                LoadObjects();
+            }
+            return _objects.First(ri => ri.ID == id);
         }
-      }
-      foreach (var item in Current.Context.ReportItem.Viewers)
-      {
-        foreach (var p in item.Parameters)
+
+        private void LoadObjects()
         {
-          nvc.Add(string.Concat(item.Id, valueSeparator, p.Name), p.Value);
+            _objects = new HashSet<ReferenceItem>();
+            foreach (var item in Scanners) { _objects.Add(item); }
+            foreach (var item in Viewers) { _objects.Add(item); }
+            foreach (var item in Filters) { _objects.Add(item); }
         }
-      }
-      return Sitecore.StringUtil.NameValuesToString(nvc, parameterSeparator);
-    }
 
-    public static ReportItem CreateFromParameters(string parameters)
-    {
-      Assert.ArgumentNotNullOrEmpty(parameters, "parameters");
-      var nvc = StringUtil.ParseNameValueCollection(parameters, '&', '=');
-      return CreateFromParameters(nvc);
-    }
-
-    public static ReportItem CreateFromParameters(NameValueCollection nvc)
-    {
-      Assert.IsNotNull(nvc, "Incorrect Parameters Format");
-      var id = nvc["id"];
-      if (id == null) return null;
-      var director = new SCDirector("master", "en");
-      if (!director.ObjectExists(id)) throw new Exception("Report has been deleted");
-
-      var reportItem = director.GetObjectByIdentifier<ReportItem>(id);
-
-      foreach (string key in nvc.Keys)
-      {
-        if (key.Contains("^"))
+        public string SerializeParameters()
         {
-          var item_parameter = key.Split('^');
-          var guid = new Guid(item_parameter[0]);
-
-          var ri = reportItem.FindItem(guid);
-          if (ri != null)
-          {
-            ri.SetAttributeValue(item_parameter[1], nvc[key]);
-          }
+            return SerializeParameters("^", "&");
         }
-      }
-      return reportItem;
-    }
 
-    public Report TransformToReport( Report report)
-    {
-      if (report == null)
-      {
-        report = new Report();
-      }
-      foreach (var sItem in this.Scanners)
-      {
-        report.AddScanner(sItem);
-      }
-      foreach (var vItem in this.Viewers)
-      {
-        report.AddViewer(vItem);
-      }
-      foreach (var fItem in this.Filters)
-      {
-        report.AddFilter(fItem);
-      }
-     return report;
+        public string SerializeParameters(string valueSeparator, string parameterSeparator)
+        {
+            var nvc = new NameValueCollection
+                    {
+                        {"id", Current.Context.ReportItem.ID.ToString()}
+                    };
+            foreach (var item in Current.Context.ReportItem.Scanners)
+            {
+                foreach (var p in item.Parameters)
+                {
+                    nvc.Add(string.Concat(item.ID, valueSeparator, p.Name), p.Value);
+                }
+            }
+            foreach (var item in Current.Context.ReportItem.Filters)
+            {
+                foreach (var p in item.Parameters)
+                {
+                    nvc.Add(string.Concat(item.ID, valueSeparator, p.Name), p.Value);
+                }
+            }
+            foreach (var item in Current.Context.ReportItem.Viewers)
+            {
+                foreach (var p in item.Parameters)
+                {
+                    nvc.Add(string.Concat(item.ID, valueSeparator, p.Name), p.Value);
+                }
+            }
+            return StringUtil.NameValuesToString(nvc, parameterSeparator);
+        }
+
+        public static ReportItem CreateFromParameters(string parameters)
+        {
+            Assert.ArgumentNotNullOrEmpty(parameters, "parameters");
+            var nvc = StringUtil.ParseNameValueCollection(parameters, '&', '=');
+            return CreateFromParameters(nvc);
+        }
+
+        public static ReportItem CreateFromParameters(NameValueCollection nvc)
+        {
+            Assert.IsNotNull(nvc, "Incorrect Parameters Format");
+            var id = nvc["id"];
+            if (id == null) return null;            
+            
+            var reportItem = new ReportItem(Client.ContentDatabase.GetItem(id));
+            if (reportItem == null) throw new Exception("Report has been deleted");
+
+            foreach (string key in nvc.Keys)
+            {
+                if (key.Contains("^"))
+                {
+                    var itemParameter = key.Split('^');
+                    var guid = new ID(itemParameter[0]);
+
+                    var ri = reportItem.FindItem(guid);
+                    if (ri != null)
+                    {
+                        ri.SetAttributeValue(itemParameter[1], nvc[key]);
+                    }
+                }
+            }
+            return reportItem;
+        }
+
+        public Report TransformToReport(Report report)
+        {
+            if (report == null)
+            {
+                report = new Report();
+            }
+            foreach (var sItem in Scanners)
+            {
+                report.AddScanner(sItem);
+            }
+            foreach (var vItem in Viewers)
+            {
+                report.AddViewer(vItem);
+            }
+            foreach (var fItem in Filters)
+            {
+                report.AddFilter(fItem);
+            }
+            return report;
+        }
     }
-  }
 }

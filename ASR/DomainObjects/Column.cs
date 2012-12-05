@@ -1,22 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
-namespace ASR.DomainObjects
+﻿namespace ASR.DomainObjects
 {
 	public class Column
 	{
-		private string _Name;
+		private string _name;
 		public string Name
 		{
 			get
 			{
-				return _Name;
+				return _name;
 			}
 			set
 			{
-				_Name = value.ToLower();
+				_name = value.ToLower();
 			}
 		}
 		public string Header;

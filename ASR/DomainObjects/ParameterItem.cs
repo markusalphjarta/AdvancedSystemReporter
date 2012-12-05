@@ -1,57 +1,61 @@
-﻿using CorePoint.DomainObjects;
-using CorePoint.DomainObjects.SC;
+﻿using System.Globalization;
 using System.Collections.Generic;
 using System;
 using System.Collections.Specialized;
+using Sitecore.Data.Items;
 using Sitecore.Web.UI.HtmlControls;
+using System.Linq;
 
 namespace ASR.DomainObjects
-{
-	[Template("System/ASR/Parameter")]
-	public class ParameterItem : StandardTemplate
+{	
+	public class ParameterItem : CustomItem
 	{
-		[Field("title")]
+	    public ParameterItem(Item innerItem) : base(innerItem)
+	    {
+	    }
+	    
 		public string Title
 		{
-			get;
-			set;
+            get { return InnerItem["Title"]; }
 		}
-
-		[Field("type")]
+		
 		public string Type
 		{
-			get;
-			set;
+		    get { return InnerItem["Type"]; }		    
 		}
 
-		[Field("default value")]
-		private string DefaultValue { get; set; }
+		
+		private string DefaultValue {
+            get { return InnerItem["default value"]; }
+		}
 
+	    
 		public string Value
 		{
-			get
+		    get
 			{
-				string _replacedValue = DefaultValue;
-				if (!string.IsNullOrEmpty(_replacedValue))
+				string replacedValue = DefaultValue;
+				if (!string.IsNullOrEmpty(replacedValue))
 				{
-					_replacedValue = _replacedValue.Replace("$sc_lastyear", DateTime.Today.AddYears(-1).ToString("yyyyMMddTHHmmss"));
-					_replacedValue = _replacedValue.Replace("$sc_lastweek", DateTime.Today.AddDays(-7).ToString("yyyyMMddTHHmmss"));
-					_replacedValue = _replacedValue.Replace("$sc_lastmonth", DateTime.Today.AddMonths(-1).ToString("yyyyMMddTHHmmss"));
-					_replacedValue = _replacedValue.Replace("$sc_yesterday", DateTime.Today.AddDays(-1).ToString("yyyyMMddTHHmmss"));
-					_replacedValue = _replacedValue.Replace("$sc_today", DateTime.Today.ToString("yyyyMMddTHHmmss"));
-					_replacedValue = _replacedValue.Replace("$sc_now", DateTime.Now.ToString("yyyyMMddTHHmmss"));
-					_replacedValue = _replacedValue.Replace("$sc_currentuser", Sitecore.Context.User == null ? string.Empty : Sitecore.Context.User.Name);
+					replacedValue = replacedValue.Replace("$sc_lastyear", DateTime.Today.AddYears(-1).ToString("yyyyMMddTHHmmss"));
+					replacedValue = replacedValue.Replace("$sc_lastweek", DateTime.Today.AddDays(-7).ToString("yyyyMMddTHHmmss"));
+					replacedValue = replacedValue.Replace("$sc_lastmonth", DateTime.Today.AddMonths(-1).ToString("yyyyMMddTHHmmss"));
+					replacedValue = replacedValue.Replace("$sc_yesterday", DateTime.Today.AddDays(-1).ToString("yyyyMMddTHHmmss"));
+					replacedValue = replacedValue.Replace("$sc_today", DateTime.Today.ToString("yyyyMMddTHHmmss"));
+					replacedValue = replacedValue.Replace("$sc_now", DateTime.Now.ToString("yyyyMMddTHHmmss"));
+					replacedValue = replacedValue.Replace("$sc_currentuser", Sitecore.Context.User == null ? string.Empty : Sitecore.Context.User.Name);
 				}
-				return _replacedValue;
+				return replacedValue;
 			}
-			set
-			{
-				DefaultValue = value;
-			}
+            //set
+            //{
+            //    DefaultValue = value;
+            //}
+		    set { throw new NotImplementedException(); }
 		}
 
-        [Field("parameters")]
-        public string _parameters { get; set; }
+
+	    private string parameters { get { return InnerItem["parameters"]; } }
 
         private NameValueCollection _params;
         public NameValueCollection Parameters
@@ -60,9 +64,9 @@ namespace ASR.DomainObjects
             {
                 if (_params == null)
                 {
-                    //_params = Sitecore.StringUtil.ParseNameValueCollection(_parameters, '|', '=');
+                    //_params = Sitecore.StringUtil.ParseNameValueCollection(parameters, '|', '=');
                     _params = new NameValueCollection();
-                    string[] substrings = _parameters.Split('|');
+                    string[] substrings = parameters.Split('|');
                     foreach (var st in substrings)
                     {
                         int i = st.IndexOf('=');
@@ -78,64 +82,61 @@ namespace ASR.DomainObjects
 
 		public IEnumerable<ValueItem> PossibleValues()
 		{
-			return this.Director.GetChildObjects<ValueItem>(this.Id);
+		    return InnerItem.Children.Select(i=>new ValueItem(i));
 		}
 
         public Control MakeControl()
         {
             Control input = null;
-            if (this.Type == "Text")
+            if (Type == "Text")
             {
-                input = new Edit();
-                input.ID = Control.GetUniqueID("input");
+                input = new Edit {ID = Control.GetUniqueID("input")};
             }
-            else if (this.Type == "Dropdown")
+            else if (Type == "Dropdown")
             {
-                Combobox c = new Combobox();
-                foreach (var value in this.PossibleValues())
+                var c = new Combobox();
+                foreach (var value in PossibleValues())
                 {
-                    ListItem li = new ListItem();
-                    li.Header = value.Name;
-                    li.Value = value.Value;
+                    var li = new ListItem {Header = value.Name, Value = value.Value};
                     c.Controls.Add(li);
                 }
                 input = c;
                 input.ID = Control.GetUniqueID("input");
             }
-            else if (this.Type == "Item Selector")
+            else if (Type == "Item Selector")
             {
-                ASR.Controls.ItemSelector iSelect = new ASR.Controls.ItemSelector();
+                var iSelect = new Controls.ItemSelector();
                 input = iSelect;
                 input.ID = Control.GetUniqueID("input");
                 iSelect.Click = string.Concat("itemselector", ":", input.ID);
-                if (this.Parameters["root"] != null) iSelect.Root = this.Parameters["root"];
-                if (this.Parameters["folder"] != null) iSelect.Folder = this.Parameters["folder"];
-                if (this.Parameters["displayresult"] != null) iSelect.DisplayValueType = (ASR.Controls.ItemInfo)Enum.Parse(typeof(ASR.Controls.ItemInfo), this.Parameters["displayresult"].ToString());
-                if (this.Parameters["valueresult"] != null) iSelect.ValueType = (ASR.Controls.ItemInfo)Enum.Parse(typeof(ASR.Controls.ItemInfo), this.Parameters["valueresult"].ToString());
-                if (this.Parameters["filter"] != null) iSelect.Filter = this.Parameters["filter"];
+                if (Parameters["root"] != null) iSelect.Root = Parameters["root"];
+                if (Parameters["folder"] != null) iSelect.Folder = Parameters["folder"];
+                if (Parameters["displayresult"] != null) iSelect.DisplayValueType = (Controls.ItemInfo)Enum.Parse(typeof(Controls.ItemInfo), Parameters["displayresult"]);
+                if (Parameters["valueresult"] != null) iSelect.ValueType = (Controls.ItemInfo)Enum.Parse(typeof(Controls.ItemInfo), Parameters["valueresult"].ToString(CultureInfo.InvariantCulture));
+                if (Parameters["filter"] != null) iSelect.Filter = Parameters["filter"];
             }
-            else if (this.Type == "User Selector")
+            else if (Type == "User Selector")
             {
-                ASR.Controls.UserSelector uSelect = new ASR.Controls.UserSelector();
+                var uSelect = new Controls.UserSelector();
                 input = uSelect;
                 input.ID = Control.GetUniqueID("input");
                 uSelect.Click = string.Concat("itemselector", ":", input.ID);
-                if (this.Parameters["filter"] != null) uSelect.Filter = this.Parameters["filter"];
+                if (Parameters["filter"] != null) uSelect.Filter = Parameters["filter"];
             }
-            else if (this.Type == "Date picker")
+            else if (Type == "Date picker")
             {
-                var dtPicker = new ASR.Controls.DateTimePicker();
+                var dtPicker = new Controls.DateTimePicker();
                 dtPicker.Style.Add("float", "left");
-                dtPicker.ID = Sitecore.Web.UI.HtmlControls.Control.GetUniqueID("input");
+                dtPicker.ID = Control.GetUniqueID("input");
                 dtPicker.ShowTime = false;
                 dtPicker.Click = "datepicker" + ":" + dtPicker.ID;
                 dtPicker.Style.Add(System.Web.UI.HtmlTextWriterStyle.Display, "inline");
                 dtPicker.Style.Add(System.Web.UI.HtmlTextWriterStyle.VerticalAlign, "middle");
-                if (this.Parameters["Format"] != null) dtPicker.Format = this.Parameters["Format"];
+                if (Parameters["Format"] != null) dtPicker.Format = Parameters["Format"];
                 input = dtPicker;
             }
             //input.ID = Control.GetUniqueID("input");
-            input.Value = this.Value;
+            input.Value = Value;
             return input;
         }
 

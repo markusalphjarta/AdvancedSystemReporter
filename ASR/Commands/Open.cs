@@ -1,7 +1,5 @@
 ﻿using Sitecore.Shell.Framework.Commands;
 using Sitecore.Web.UI.Sheer;
-using CorePoint.DomainObjects.SC;
-using ASR.DomainObjects;
 using Sitecore.Data.Items;
 using Sitecore.Data;
 using Sitecore.Web.UI.WebControls;

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using CorePoint.DomainObjects.SC;
-using CorePoint.DomainObjects;
-using ASR.App;
+﻿using System.Collections.Generic;
 using Sitecore.Shell.Framework.Commands;
 using Sitecore.Data.Items;
 using Sitecore.Collections;
@@ -14,28 +8,32 @@ using Sitecore.Reflection;
 
 namespace ASR.DomainObjects
 {
-    [Template("system/asr/command")]
-    public class CommandItem : StandardTemplate
+    public class CommandItem : BaseItem
     {
-        [Field("title")]
+        public CommandItem(Item innerItem)
+            : base(innerItem)
+        {
+        }
+
         public string Title
         {
-            get;
-            private set;
+            get { return InnerItem["Title"]; }
         }
-        [Field("icon")]
-        public string Icon
-        {
-            get;
-            private set;
-        }
-        [Field("command")]
-        public string Command
-        { get; set; }
 
-        [Field("singleitemcontext")]
+        public new string Icon
+        {
+            get { return InnerItem["Icon"]; }
+        }
+
+
+        public string Command
+        { get { return InnerItem["Command"]; } }
+
+
         public bool SingleItemContext
-        { get; set;}
+        {
+            get { return InnerItem["Command"] == "1"; }
+        }
 
         internal void Run(StringList values)
         {
@@ -44,15 +42,15 @@ namespace ASR.DomainObjects
                 return;
             }
 
-            List<Item> items = new List<Item>();
-            StringList othervalues = new StringList();
+            var items = new List<Item>();
+            var othervalues = new StringList();
 
             foreach (var val in values)
             {
-                ItemUri uri = ItemUri.Parse(val);
+                var uri = ItemUri.Parse(val);
                 if (uri != null)
                 {
-                    items.Add(Sitecore.Data.Database.GetItem(uri));
+                    items.Add(Database.GetItem(uri));
                 }
                 else
                 {
@@ -60,25 +58,26 @@ namespace ASR.DomainObjects
                 }
             }
 
-            Command command = CommandManager.GetCommand(Command) 
+            Command command = CommandManager.GetCommand(Command)
                 ?? (Command)ReflectionUtil.CreateObject(Command);
-            Debug.Assert(command != null, Command + " not found.");
+
+            Assert.IsNotNull(command, Command + " not found.");
+
             //pass parameters
-            var indexSt = Command.IndexOf('(')+1;
+            var indexSt = Command.IndexOf('(') + 1;
             if (indexSt > 0)
             {
                 var length = Command.IndexOf(')') - indexSt;
-                if(length > 0)
+                if (length > 0)
                 {
-                    ReflectionUtil.SetProperties(command, Command.Substring(indexSt, length));    
-                }                
+                    ReflectionUtil.SetProperties(command, Command.Substring(indexSt, length));
+                }
             }
 
             // If our command can hanlde more than one item in the context we run it once
             if (!SingleItemContext)
             {
-                CommandContext cc = new CommandContext(items.ToArray());
-                cc.CustomData = othervalues;
+                var cc = new CommandContext(items.ToArray()) { CustomData = othervalues };
                 command.Execute(cc);
             }
             //otherwise we have to generate as many commands as items 
@@ -88,7 +87,7 @@ namespace ASR.DomainObjects
                 {
                     foreach (var item in items)
                     {
-                        CommandContext cc = new CommandContext(item);
+                        var cc = new CommandContext(item);
                         command.Execute(cc);
                     }
                 }
@@ -96,8 +95,7 @@ namespace ASR.DomainObjects
                 {
                     foreach (var othervalue in othervalues)
                     {
-                        CommandContext cc = new CommandContext();
-                        cc.CustomData = othervalue;
+                        var cc = new CommandContext { CustomData = othervalue };
                         command.Execute(cc);
                     }
                 }
