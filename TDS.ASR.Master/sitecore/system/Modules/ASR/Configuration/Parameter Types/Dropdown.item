@@ -12,8 +12,15 @@ templatekey: Value
 ----version----
 language: en
 version: 1
-revision: ceb842d6-5e73-4a91-944e-4bd6a772c11f
+revision: 9c6affa8-eebb-4c90-bfc9-c75de723db0a
 
+----field----
+field: {1AC5871D-8232-4DF5-8EE1-F2D038DEE591}
+name: Value
+key: value
+content-length: 67
+
+Sitecore.Shell.Web.UI.WebControls.SmallDropDownBox, Sitecore.Kernel
 ----field----
 field: {52807595-0F8F-4B20-8D2A-CB71D28C6103}
 name: __Owner
@@ -41,14 +48,14 @@ name: __Revision
 key: __revision
 content-length: 36
 
-ceb842d6-5e73-4a91-944e-4bd6a772c11f
+9c6affa8-eebb-4c90-bfc9-c75de723db0a
 ----field----
 field: {D9CF14B1-FA16-4BA6-9288-E8A174D4D522}
 name: __Updated
 key: __updated
 content-length: 34
 
-20090423T162435:633761006755048828
+20121206T125545:634903953458960693
 ----field----
 field: {BADD9CF9-53E0-4D0C-BCC0-2D784C282F6A}
 name: __Updated by
