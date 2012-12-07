@@ -98,34 +98,25 @@ namespace ASR.DomainObjects
             }
         }
 
-        private HashSet<ReferenceItem> _objects;
+       
 
         public ReferenceItem FindItem(string name)
         {
-            if (_objects == null)
-            {
-                LoadObjects();
-            }
-            return _objects.First(ri => ri.Name == name);
+            return
+                Scanners.Cast<ReferenceItem>().FirstOrDefault(ri => ri.Name == name)
+                ?? Filters.Cast<ReferenceItem>().FirstOrDefault(ri => ri.Name == name)
+                ?? Viewers.Cast<ReferenceItem>().FirstOrDefault(ri => ri.Name == name);
         }
 
         public ReferenceItem FindItem(ID id)
         {
-            if (_objects == null)
-            {
-                LoadObjects();
-            }
-            return _objects.First(ri => ri.ID == id);
+            return
+                Scanners.Cast<ReferenceItem>().FirstOrDefault(ri => ri.ID == id)
+                ?? Filters.Cast<ReferenceItem>().FirstOrDefault(ri => ri.ID == id)
+                ?? Viewers.Cast<ReferenceItem>().FirstOrDefault(ri => ri.ID == id);
         }
 
-        private void LoadObjects()
-        {
-            _objects = new HashSet<ReferenceItem>();
-            foreach (var item in Scanners) { _objects.Add(item); }
-            foreach (var item in Viewers) { _objects.Add(item); }
-            foreach (var item in Filters) { _objects.Add(item); }
-        }
-
+       
         public string SerializeParameters()
         {
             return SerializeParameters("^", "&");
@@ -135,23 +126,23 @@ namespace ASR.DomainObjects
         {
             var nvc = new NameValueCollection
                     {
-                        {"id", Current.Context.ReportItem.ID.ToString()}
+                        {"id", ID.ToString()}
                     };
-            foreach (var item in Current.Context.ReportItem.Scanners)
+            foreach (var item in Scanners)
             {
                 foreach (var p in item.Parameters)
                 {
                     nvc.Add(string.Concat(item.ID, valueSeparator, p.Name), p.Value);
                 }
             }
-            foreach (var item in Current.Context.ReportItem.Filters)
+            foreach (var item in Filters)
             {
                 foreach (var p in item.Parameters)
                 {
                     nvc.Add(string.Concat(item.ID, valueSeparator, p.Name), p.Value);
                 }
             }
-            foreach (var item in Current.Context.ReportItem.Viewers)
+            foreach (var item in Viewers)
             {
                 foreach (var p in item.Parameters)
                 {

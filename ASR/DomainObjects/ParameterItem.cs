@@ -84,6 +84,32 @@ namespace ASR.DomainObjects
 		{
 		    return InnerItem.Children.Select(i=>new ValueItem(i));
 		}
+        public object BuildControl()
+        {
+            var parametertypesfolder = this.Database.GetItem("{13DEF994-4473-41D2-81A7-89BAA670D019}");
+            var pi = parametertypesfolder.Children[Type];
+            if (pi != null)
+            {
+                dynamic ctl = Sitecore.Reflection.ReflectionUtil.CreateObject(pi["value"]);
+                if (ctl != null)
+                {
+                    ctl.ID = "parameter" + Name;
+                    ctl.Header = Title;
+                    ctl.Icon = Icon;
+                    if (InnerItem.HasChildren)
+                    {
+                        foreach (var possibleValue in PossibleValues())
+                        {
+                            ctl.Items.Add(possibleValue.DisplayName);
+                        }
+                        
+                    }
+                    ctl.Value = DefaultValue;
+                }
+                return ctl;
+            }
+            return null;
+        }
 
         public Control MakeControl()
         {

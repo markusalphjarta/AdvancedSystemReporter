@@ -11,7 +11,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>ASR</RootNamespace>
     <AssemblyName>ASR</AssemblyName>
-    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
@@ -33,6 +33,7 @@
     <IsWebBootstrapper>false</IsWebBootstrapper>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -58,6 +59,7 @@
       <HintPath>..\lib\ComponentArt.Web.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Sitecore.Kernel">
       <HintPath>..\lib\Sitecore.Kernel.dll</HintPath>
       <Private>False</Private>
@@ -102,6 +104,7 @@
     <Compile Include="Controls\ItemSelectorDialog.cs" />
     <Compile Include="Controls\LinkButton.cs" />
     <Compile Include="Controls\ASRListview.cs" />
+    <Compile Include="Controls\ParametersPanel.cs" />
     <Compile Include="Controls\ToolButton.cs" />
     <Compile Include="Controls\Toolmenu.cs" />
     <Compile Include="Controls\ToolMenuButton.cs" />
@@ -122,7 +125,6 @@
     <Compile Include="Interface\BaseViewer.cs" />
     <Compile Include="Interface\DisplayElement.cs" />
     <Compile Include="Interface\Report.cs" />
-    <Compile Include="ReportRunner.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="sitecore modules\Shell\ASR\AdvancedSystemReporter.aspx.cs">
       <DependentUpon>AdvancedSystemReporter.aspx</DependentUpon>
