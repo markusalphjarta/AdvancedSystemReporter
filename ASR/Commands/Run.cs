@@ -5,25 +5,27 @@ using System.Text;
 using Sitecore.Diagnostics;
 using Sitecore.Shell.Framework.Commands;
 using Sitecore.Web.UI.Sheer;
+using Sitecore.Web.UI.WebControls;
+using Sitecore.Web.UI.XamlSharp.Continuations;
 
 namespace ASR.Commands
 {
-    public class Run : Command
+    public class Run : Command, ISupportsContinuation
     {
         public override void Execute(CommandContext context)
         {
-
-            Sitecore.Context.ClientPage.Start(this, "RunReport");//, new ClientPipelineArgs(context.Parameters));
+            ContinuationManager.Current.Start(this, "Start", new ClientPipelineArgs(context.Parameters));
+            
         }
 
-        public void RunReport(ClientPipelineArgs args)
+        public void Start(ClientPipelineArgs args)
         {
             var parameters = args.Parameters["parameters"];
-            args.Parameters.Add("nothing","to");
+            
             //get parameters from the ui
             //Sitecore.Context.ClientPage.SendMessage(this, "ASR.MainForm:updateparameters");
             // var reportItem = new ReportItem(Client.ContentDatabase.GetItem(args.Parameters["reportid"]));
-            Log.Info("RJ +" + parameters, this);
+            Log.Info("RJ +" + parameters.Aggregate((a,c)=> a+= c), this);
             // var report = reportItem.TransformToReport(null);
             //if (Current.Context.Report == null)
             //{

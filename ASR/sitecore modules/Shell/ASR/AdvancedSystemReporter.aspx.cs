@@ -126,7 +126,7 @@ namespace ASR.sitecore_modules.Shell.ASR
             {               
                 if (key != null && key.StartsWith(inputParameter))
                 {
-                    parameters.Add(key.ToString().Substring(inputParameter.Length),Form.Attributes[key.ToString()]);
+                    parameters.Add(key.Substring(inputParameter.Length),Form.Attributes[key]);
                 }
             }
             if (parameters.Count > 0)
