@@ -132,7 +132,7 @@
                 SortImageHeight="13">
                 <Columns>
                   <ca:GridColumn DataField="scGridID" Visible="false" IsSearchable="false" />
-                  <ca:GridColumn  DataField="Icon" Visible="true" IsSearchable="false"  DataCellServerTemplateId="IconTemplate"/>                                                  
+                  <ca:GridColumn  DataField="Icon" Visible="true" IsSearchable="false"  DataCellServerTemplateId="IconTemplate"/>                                                          
                 </Columns>
               </ca:GridLevel>
             </Levels>

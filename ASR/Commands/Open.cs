@@ -50,7 +50,7 @@ namespace ASR.Commands
                     //if (rItem != null)
                     {
                         Current.Context.ReportItem = new ReportItem(item);                        
-                        AjaxScriptManager.Current.Dispatch("asr:refreshgrid");
+                        AjaxScriptManager.Current.Dispatch("asr:refreshRibbon");
                     }
                         break;
                    

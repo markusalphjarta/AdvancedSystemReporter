@@ -23,26 +23,18 @@ namespace ASR.Commands
 
         public void Start(ClientPipelineArgs args)
         {
-
             var parameters = WebUtil.ParseUrlParameters(args.Parameters["parameters"] ?? string.Empty);
 
             Current.Context.Parameters = parameters;
 
-            Current.Context.ReportItem.Run(Current.Context);
-
-            
-            AjaxScriptManager.Current.Dispatch("asr:runfinished");
-
-            //Sitecore.Shell.Applications.Dialogs.ProgressBoxes.ProgressBox.Execute(
-            //    "Scanning...",
-            //    "Scanning items",
-            //    "",
-            //     reportItem.Run,
-            //    "asr:runfinished",
-            //    new object[] {parameters, Current.Context.Results});
+            Sitecore.Shell.Applications.Dialogs.ProgressBoxes.ProgressBox.Execute(
+                "Scanning...",
+                "Scanning items",
+                "",
+                 Current.Context.ReportItem.Run,
+                "asr:runfinished",
+                new object[] { Current.Context });
         }
-
-
 
         public override CommandState QueryState(CommandContext context)
         {

@@ -209,24 +209,16 @@ namespace ASR.DomainObjects
             get; set;
         }
 
-        //public void Run(params object[] parameters)
-        public void Run(ASR.Context context )
+        public void Run(params object[] parameters)
+        
         {
+            var context = parameters[0] as ASR.Context;
+            if(context == null) throw new NotImplementedException(); //TODO 
             var replacements = context.Parameters;
-           // var results = Results;
-            //var replacements = parameters[0] as NameValueCollection;
-            //var results = parameters[1] as List<DisplayElement>;
-           // if (results == null) return;
-            //Scanners.ForEach(s=> s.ReplaceAttributes(replacements));
-            //Filters.ForEach(s=> s.ReplaceAttributes(replacements));
-            //Viewers.ForEach(s=> s.ReplaceAttributes(replacements));
-
+        
             var scanners = Scanners.Select(s => s.MakeObject(replacements)).Cast<BaseScanner>();
             var filters = Filters.Select(f => f.MakeObject(replacements)).Cast<BaseFilter>();
-            var viewers = Viewers.Select(v => v.MakeObject(replacements)).Cast<BaseViewer>();
-
-
-          //  results.Clear(); 
+            var viewers = Viewers.Select(v => v.MakeObject(replacements)).Cast<BaseViewer>();        
 
             Results = scanners
                 .SelectMany(s => s.Scan().Cast<object>())
