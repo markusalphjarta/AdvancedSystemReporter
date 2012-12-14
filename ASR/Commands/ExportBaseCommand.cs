@@ -33,8 +33,10 @@
 
     public override CommandState QueryState(CommandContext context)
     {
-      return Current.Context.Report == null ? 
-        CommandState.Disabled : base.QueryState(context);
+        return base.QueryState(context);
+        //TODO
+        //return Current.Context.Report == null ? 
+        //CommandState.Disabled : base.QueryState(context);
     }
 
     #endregion

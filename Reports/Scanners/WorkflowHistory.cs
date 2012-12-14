@@ -25,7 +25,7 @@ namespace ASR.Reports.Scanners
         {
             get
             {
-                if (_days == int.MinValue && !int.TryParse(getParameter("Age"), out _days))
+                if (_days == int.MinValue && !int.TryParse(GetParameter("Age"), out _days))
                     _days = 0;
                 return _days;
             }
@@ -33,7 +33,7 @@ namespace ASR.Reports.Scanners
 
         public Item RootItem
         {
-            get { return _root ?? (_root = Db.GetItem(getParameter("root"))); }
+            get { return _root ?? (_root = Db.GetItem(GetParameter("root"))); }
         }
 
         protected Database Db

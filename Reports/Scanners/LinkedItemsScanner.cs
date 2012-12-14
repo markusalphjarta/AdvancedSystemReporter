@@ -14,14 +14,14 @@ namespace ASR.Reports.Scanners
 
     public override ICollection Scan()
     {
-      var databasename = getParameter(DB_PARAMETER);
+      var databasename = GetParameter(DB_PARAMETER);
       var db = !string.IsNullOrEmpty(databasename) ? Sitecore.Configuration.Factory.GetDatabase(databasename) ?? Sitecore.Context.ContentDatabase : Sitecore.Context.ContentDatabase;
 
-      var rootpath = getParameter(ROOT_PARAMETER);
+      var rootpath = GetParameter(ROOT_PARAMETER);
       var rootitem = !string.IsNullOrEmpty(rootpath) ? db.GetItem(rootpath) ?? db.GetRootItem() : db.GetRootItem();
 
       Item[] items;
-      switch(getParameter(CASCADE_PARAMETER))
+      switch(GetParameter(CASCADE_PARAMETER))
       {        
         case "0" : //children
           items = rootitem.Children.InnerChildren.ToArray();
@@ -37,7 +37,7 @@ namespace ASR.Reports.Scanners
       
       var linkdb = Sitecore.Configuration.Factory.GetLinkDatabase();
 
-      var mode = getParameter(MODE_PARAMETER);
+      var mode = GetParameter(MODE_PARAMETER);
 
       var results = new ArrayList();
 

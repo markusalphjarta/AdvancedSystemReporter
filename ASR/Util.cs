@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using Sitecore.Text;
 using Sitecore.Web.UI.Sheer;
 using Sitecore.Data.Items;
@@ -83,9 +84,9 @@ namespace ASR
 
         }
 
-        public static string MakeDateReplacements(string original)
+        public static void MakeDateReplacements(ref string replacement)
         {
-            var replacement = original;
+            
             replacement = replacement.Replace("$sc_nextyear", DateTime.Today.AddYears(1).ToString("yyyyMMddTHHmmss"));
             replacement = replacement.Replace("$sc_nextweek", DateTime.Today.AddDays(7).ToString("yyyyMMddTHHmmss"));
             replacement = replacement.Replace("$sc_nextmonth", DateTime.Today.AddMonths(1).ToString("yyyyMMddTHHmmss"));
@@ -96,8 +97,17 @@ namespace ASR
             replacement = replacement.Replace("$sc_yesterday", DateTime.Today.AddDays(-1).ToString("yyyyMMddTHHmmss"));
             replacement = replacement.Replace("$sc_today", DateTime.Today.ToString("yyyyMMddTHHmmss"));
             replacement = replacement.Replace("$sc_now", DateTime.Now.ToString("yyyyMMddTHHmmss"));
-            return replacement;
+            replacement = replacement.Replace("$sc_currentuser", Sitecore.Context.User.Name);
+        }        
+    
+        public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> f)
+        {
+            foreach (var variable in enumerable)
+            {
+                f(variable);
+            }
         }
 
+      
     }
 }

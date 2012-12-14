@@ -6,6 +6,9 @@ using ASR.Interface;
 using Sitecore.Collections;
 using Sitecore.Data.Fields;
 using Sitecore.Data.Items;
+using Sitecore.Shell.Applications.Dialogs.ProgressBoxes;
+using Sitecore.Web;
+
 
 namespace ASR.DomainObjects
 {
@@ -20,6 +23,13 @@ namespace ASR.DomainObjects
         public ReportItem(Item innerItem)
             : base(innerItem)
         {
+        }
+
+        public static ReportItem Create(string reportid)
+        {
+            var item = Client.ContentDatabase.GetItem(reportid);
+            Assert.IsNotNull(item, "can create item {0}", reportid);
+            return new ReportItem(item);
         }
 
         public IEnumerable<ScannerItem> _scanners;
@@ -96,9 +106,7 @@ namespace ASR.DomainObjects
                     break;
                 }
             }
-        }
-
-       
+        }               
 
         public ReferenceItem FindItem(string name)
         {
@@ -124,33 +132,42 @@ namespace ASR.DomainObjects
 
         public string SerializeParameters(string valueSeparator, string parameterSeparator)
         {
-            var nvc = new NameValueCollection
-                    {
-                        {"id", ID.ToString()}
-                    };
-            foreach (var item in Scanners)
-            {
-                foreach (var p in item.Parameters)
-                {
-                    nvc.Add(string.Concat(item.ID, valueSeparator, p.Name), p.Value);
-                }
-            }
-            foreach (var item in Filters)
-            {
-                foreach (var p in item.Parameters)
-                {
-                    nvc.Add(string.Concat(item.ID, valueSeparator, p.Name), p.Value);
-                }
-            }
-            foreach (var item in Viewers)
-            {
-                foreach (var p in item.Parameters)
-                {
-                    nvc.Add(string.Concat(item.ID, valueSeparator, p.Name), p.Value);
-                }
-            }
-            return StringUtil.NameValuesToString(nvc, parameterSeparator);
+            throw new NotImplementedException();
+            //var nvc = new NameValueCollection
+            //        {
+            //            {"id", ID.ToString()}
+            //        };
+            //foreach (var item in Scanners)
+            //{
+            //    foreach (var p in item.Parameters)
+            //    {
+            //        nvc.Add(string.Concat(item.ID, valueSeparator, p.Name), p.Value);
+            //    }
+            //}
+            //foreach (var item in Filters)
+            //{
+            //    foreach (var p in item.Parameters)
+            //    {
+            //        nvc.Add(string.Concat(item.ID, valueSeparator, p.Name), p.Value);
+            //    }
+            //}
+            //foreach (var item in Viewers)
+            //{
+            //    foreach (var p in item.Parameters)
+            //    {
+            //        nvc.Add(string.Concat(item.ID, valueSeparator, p.Name), p.Value);
+            //    }
+            //}
+            //return StringUtil.NameValuesToString(nvc, parameterSeparator);
         }
+
+        //public void MakeReplacements(NameValueCollection parameters)
+        //{            
+        //        Scanners.Cast<ReferenceItem>()
+        //                .Concat(Filters)
+        //                .Concat(Viewers)
+        //                .ForEach(o => o.ReplaceAttributes(parameters));                        
+        //}
 
         public static ReportItem CreateFromParameters(string parameters)
         {
@@ -178,32 +195,46 @@ namespace ASR.DomainObjects
                     var ri = reportItem.FindItem(guid);
                     if (ri != null)
                     {
-                        ri.SetAttributeValue(itemParameter[1], nvc[key]);
+                        ri.ReplaceAttributes(WebUtil.ParseUrlParameters(nvc[key],'|'));
                     }
                 }
             }
             return reportItem;
         }
 
-        public Report TransformToReport(Report report)
+        public IEnumerable<DisplayElement> Results { get; set; }
+
+        public HashSet<string> Columns
         {
-            if (report == null)
-            {
-                report = new Report();
-            }
-            foreach (var sItem in Scanners)
-            {
-                report.AddScanner(sItem);
-            }
-            foreach (var vItem in Viewers)
-            {
-                report.AddViewer(vItem);
-            }
-            foreach (var fItem in Filters)
-            {
-                report.AddFilter(fItem);
-            }
-            return report;
+            get; set;
+        }
+
+        //public void Run(params object[] parameters)
+        public void Run(ASR.Context context )
+        {
+            var replacements = context.Parameters;
+           // var results = Results;
+            //var replacements = parameters[0] as NameValueCollection;
+            //var results = parameters[1] as List<DisplayElement>;
+           // if (results == null) return;
+            //Scanners.ForEach(s=> s.ReplaceAttributes(replacements));
+            //Filters.ForEach(s=> s.ReplaceAttributes(replacements));
+            //Viewers.ForEach(s=> s.ReplaceAttributes(replacements));
+
+            var scanners = Scanners.Select(s => s.MakeObject(replacements)).Cast<BaseScanner>();
+            var filters = Filters.Select(f => f.MakeObject(replacements)).Cast<BaseFilter>();
+            var viewers = Viewers.Select(v => v.MakeObject(replacements)).Cast<BaseViewer>();
+
+
+          //  results.Clear(); 
+
+            Results = scanners
+                .SelectMany(s => s.Scan().Cast<object>())
+                .Where(o => filters.All(f => f.Filter(o)))
+                .Select(o => new DisplayElement(o,this)).ToList();
+
+            Columns = new HashSet<string>();
+            Results.ForEach(d => viewers.ForEach(v => v.Display(d)));                        
         }
     }
 }

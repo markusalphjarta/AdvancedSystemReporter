@@ -33,7 +33,7 @@ namespace ASR.Reports.Scanners
 
 		public override ICollection Scan()
 		{
-			string rootParameter = base.getParameter(ROOT_PARAMETER);
+			string rootParameter = base.GetParameter(ROOT_PARAMETER);
 			List<MediaUsageItem> itemList = new List<MediaUsageItem>();
 			Item rootItem = null;
 			if (!String.IsNullOrEmpty(rootParameter))

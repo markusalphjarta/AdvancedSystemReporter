@@ -11,10 +11,9 @@
   <sc:Stylesheet Src="Content Manager.css" DeviceDependant="true" runat="server" />
   <sc:Stylesheet Src="Ribbon.css" DeviceDependant="true" runat="server" />
   <sc:Stylesheet Src="Grid.css" DeviceDependant="true" runat="server" />
-  <sc:Script Src="/sitecore/shell/Controls/InternetExplorer.js" runat="server"/>
+  <%--<sc:Script Src="/sitecore/shell/Controls/InternetExplorer.js" runat="server"/>--%>
   <sc:Script Src="/sitecore/shell/Controls/Sitecore.js" runat="server" />
-  <sc:Script Src="/sitecore/shell/Controls/SitecoreObjects.js" runat="server" />
-  <sc:Script Src="/sitecore/shell/Applications/Content Manager/Content Editor.js" runat="server" /> 
+  <sc:Script Src="/sitecore/shell/Controls/SitecoreObjects.js" runat="server" />    
     <script type="text/javascript" language="javascript">
 
         function Users_onDoubleClick(sender, eventArgs) {
@@ -37,7 +36,6 @@
 
         function refresh() {
             DataGrid.scHandler.refresh();
-      
         }
 
        window.onresize = OnResize;

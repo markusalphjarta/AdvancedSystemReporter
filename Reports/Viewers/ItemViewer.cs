@@ -32,7 +32,7 @@ namespace ASR.Reports.Items
             {
                 if (maxLength < 0)
                 {
-                    if (!int.TryParse(getParameter(MAX_LENGHT_PARAMETER), out maxLength))
+                    if (!int.TryParse(GetParameter(MAX_LENGHT_PARAMETER), out maxLength))
                     {
                         maxLength = 100;
                     }

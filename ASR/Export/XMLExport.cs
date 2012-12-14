@@ -24,32 +24,32 @@ namespace ASR.Export
 
         private void writeValues(System.IO.StringWriter oStringWriter)
         {
-            System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
-            settings.Encoding = Encoding.UTF8;
-            settings.ConformanceLevel = System.Xml.ConformanceLevel.Auto;
+            //System.Xml.XmlWriterSettings settings = new System.Xml.XmlWriterSettings();
+            //settings.Encoding = Encoding.UTF8;
+            //settings.ConformanceLevel = System.Xml.ConformanceLevel.Auto;
             
-            System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(oStringWriter,settings);
+            //System.Xml.XmlWriter writer = System.Xml.XmlWriter.Create(oStringWriter,settings);
             
-            writer.WriteRaw("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
-            writer.WriteStartElement("report");
-            writer.WriteAttributeString("date", DateTime.Now.ToString("yyyyMMdd_HHmm"));
-            foreach (var row in Current.Context.Report.GetResultElements())
-            {
+            //writer.WriteRaw("<?xml version=\"1.0\" encoding=\"utf-8\"?>");
+            //writer.WriteStartElement("report");
+            //writer.WriteAttributeString("date", DateTime.Now.ToString("yyyyMMdd_HHmm"));
+            //foreach (var row in Current.Context.Report.GetResultElements())
+            //{
                 
-                writer.WriteStartElement("result");
-                foreach (var col in row.GetColumnNames())
-                {
-                    writer.WriteStartElement("column");
-                    writer.WriteAttributeString("name", col);
-                    writer.WriteString(row.GetColumnValue(col));
-                    writer.WriteEndElement();
-                }
+            //    writer.WriteStartElement("result");
+            //    foreach (var col in row.GetColumnNames())
+            //    {
+            //        writer.WriteStartElement("column");
+            //        writer.WriteAttributeString("name", col);
+            //        writer.WriteString(row.GetColumnValue(col));
+            //        writer.WriteEndElement();
+            //    }
 
-                writer.WriteEndElement();
-            }
-            writer.WriteEndElement();
+            //    writer.WriteEndElement();
+            //}
+            //writer.WriteEndElement();
             
-            writer.Flush();
+            //writer.Flush();
         }
     }
 }

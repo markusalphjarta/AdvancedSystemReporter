@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using ASR.DomainObjects;
 
 namespace ASR.Interface
 {
@@ -12,6 +13,8 @@ namespace ASR.Interface
         /// </summary>
         public object Element { get; private set; }
 
+        public ReportItem ReportItem { get; set; }
+
         public string Header { get; set; }
 
         public string Value { get; set; }
@@ -20,9 +23,11 @@ namespace ASR.Interface
 
         public string ExtraInfo { get; set; }
 
-        internal DisplayElement(object element)
+
+        internal DisplayElement(object element, ReportItem reportItem)
         {
             Element = element;
+            ReportItem = reportItem;
             columns = new Dictionary<string, string>();
             Icon = "";
             ExtraInfo = "";
@@ -44,6 +49,7 @@ namespace ASR.Interface
         /// <param name="value"></param>
         public void AddColumn(string name, string value)
         {
+            if(!ReportItem.Columns.Contains(name)) ReportItem.Columns.Add(name);
             columns.Add(name, value);
         }
 

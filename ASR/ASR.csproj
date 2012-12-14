@@ -100,10 +100,10 @@
     <Compile Include="Controls\ColumnEditorForm.cs" />
     <Compile Include="Controls\ColumnsField.cs" />
     <Compile Include="Controls\DateTimePicker.cs" />
+    <Compile Include="Controls\Dropdown.cs" />
     <Compile Include="Controls\ItemSelector.cs" />
     <Compile Include="Controls\ItemSelectorDialog.cs" />
     <Compile Include="Controls\LinkButton.cs" />
-    <Compile Include="Controls\ASRListview.cs" />
     <Compile Include="Controls\ParametersPanel.cs" />
     <Compile Include="Controls\ToolButton.cs" />
     <Compile Include="Controls\Toolmenu.cs" />
@@ -124,7 +124,6 @@
     <Compile Include="Interface\BaseScanner.cs" />
     <Compile Include="Interface\BaseViewer.cs" />
     <Compile Include="Interface\DisplayElement.cs" />
-    <Compile Include="Interface\Report.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="sitecore modules\Shell\ASR\AdvancedSystemReporter.aspx.cs">
       <DependentUpon>AdvancedSystemReporter.aspx</DependentUpon>
@@ -141,13 +140,10 @@
     <Compile Include="DomainObjects\CommandItem.cs" />
     <Compile Include="DomainObjects\FilterItem.cs" />
     <Compile Include="DomainObjects\ReportItem.cs" />
-    <Compile Include="ASR.cs">
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="DomainObjects\ReferenceItem.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="ASR.xml" />
     <Content Include="Controls\Column.xml" />
     <Content Include="Controls\ColumnEditor.xml" />
     <Content Include="Controls\ItemSelectorDialog.xml" />

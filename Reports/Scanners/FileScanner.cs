@@ -12,7 +12,7 @@ namespace ASR.Reports.Presentation
         {
             get
             {
-                return getParameter(_textsearch);
+                return GetParameter(_textsearch);
             }
         }
 
@@ -20,7 +20,7 @@ namespace ASR.Reports.Presentation
         {
             get
             {
-                return getParameter(_foldersParameter);
+                return GetParameter(_foldersParameter);
             }
         }
         public string[] Folders

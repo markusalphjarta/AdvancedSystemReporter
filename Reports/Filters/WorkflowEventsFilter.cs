@@ -38,7 +38,7 @@ namespace ASR.Reports.Filters
 			{
 				if (_stateTransitions == null)
 				{
-					string transitions = base.getParameter(TRANSITIONS_PARAMETER);
+					string transitions = base.GetParameter(TRANSITIONS_PARAMETER);
 					_stateTransitions = new List<StateTransition>();
 					foreach (string transitionPair in transitions.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
 					{

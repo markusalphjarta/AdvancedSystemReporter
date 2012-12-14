@@ -8,20 +8,21 @@ namespace ASR
         {
             get
             {
-                if (HttpContext.Current.Session["ASR.Context"] == null)
+                if (HttpContext.Current.Application["ASR.Context"] == null)
                 {
                     ASR.Context c = new ASR.Context();
-                    HttpContext.Current.Session["ASR.Context"] = c;
+                    HttpContext.Current.Application["ASR.Context"] = c;
                 }
-                return (ASR.Context)HttpContext.Current.Session["ASR.Context"];
+                return (ASR.Context)HttpContext.Current.Application["ASR.Context"];
             }
 
             private set
             {
-                HttpContext.Current.Session["ASR.Context"] = value;
+                HttpContext.Current.Application["ASR.Context"] = value;
             }
 
         }
+
         internal static void ClearContext()
         {
             Context = null;

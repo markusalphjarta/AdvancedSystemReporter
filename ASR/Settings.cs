@@ -7,14 +7,7 @@
 		private static Settings _instance;
 		public static Settings Instance
 		{
-			get
-			{
-				if (_instance == null)
-				{
-					_instance = new Settings();
-				}
-				return _instance;
-			}
+			get { return _instance ?? (_instance = new Settings()); }
 		}
 
 		protected Settings() { }
@@ -108,5 +101,10 @@
         return "true" == Sitecore.Configuration.Settings.GetSetting("ASR.AllowNonAdminDownloads", "false");
       }
     }
+
+      public string ParametersRegex
+      {
+          get { return Sitecore.Configuration.Settings.GetSetting("ASR.ParametersRegex", @"\{(\w*)\}"); }
+      }
 	}
 }

@@ -41,15 +41,7 @@ namespace ASR.sitecore_modules.Shell.ASR
         }
         
 
-        public string ReportId
-        {
-            get { var reportid = ViewState["reportid"];
-                return reportid == null ? null : reportid.ToString();
-            }
-            set { ViewState["reportid"] = value; }
-        }
-
-        protected override void OnInit(EventArgs e)
+       protected override void OnInit(EventArgs e)
         {
             Assert.ArgumentNotNull(e, "e");
             base.OnInit(e);
@@ -62,14 +54,16 @@ namespace ASR.sitecore_modules.Shell.ASR
         protected override void OnLoad(EventArgs e)
         {
             Assert.ArgumentNotNull(e, "e");
-            base.OnLoad(e);
+            base.OnLoad(e);            
 
-            
-
-            if (!IsPostBack)
+            if (!(IsPostBack && AjaxScriptManager.Current.IsEvent))
             {
-             
+                //ComponentArtGridHandler<DisplayElement>.Manage(this.DataGrid, new GridSource<DisplayElement>(Current.Context.ReportItem.Results),
+                //                                           this.RebindRequired);
+                this.DataGrid.LocalizeGrid();
+                
             }
+           // if(RebindRequired) PopulateGrid();
         }
 
         private static void RunReport()
@@ -80,37 +74,36 @@ namespace ASR.sitecore_modules.Shell.ASR
         }
 
         private void PopulateGrid()
-        {
-            //var results = Current.Context.Report.GetResultElements();
+        {            
 
-            //var first = results.FirstOrDefault();
-            //DataGrid.Levels[0].Columns.Clear();
+            var columns = Current.Context.ReportItem.Columns;
 
-            //DataGrid.Levels[0].Columns.Add(new GridColumn() {Visible = false, IsSearchable = false, DataField = "scGridID"});
-            //DataGrid.Levels[0].Columns.Add(new GridColumn()
-            //    {
-            //        Visible = true,
-            //        IsSearchable = false,
-            //        DataField = "Icon",
-            //        DataCellServerTemplateId = "IconTemplate"
-            //    });
+            DataGrid.Levels[0].Columns.Clear();
 
-            //if (first != null)
-            //{
-            //    foreach (var cName in first.GetColumnNames())
-            //    {
-            //        DataGrid.Levels[0].Columns.Add(new GridColumn()
-            //            {
-            //                DataField = cName,
-            //                DataCellServerTemplateId = "CommonTemplate"
-            //            });
-            //    }
-            //}
-            ////   var managedUsers = Sitecore.Context.User.Delegation.GetManagedUsers();
+            DataGrid.Levels[0].Columns.Add(new GridColumn() { Visible = false, IsSearchable = false, DataField = "scGridID" });
+            DataGrid.Levels[0].Columns.Add(new GridColumn()
+                {
+                    Visible = true,
+                    IsSearchable = false,
+                    DataField = "Icon",
+                    DataCellServerTemplateId = "IconTemplate"
+                });
 
-            //ComponentArtGridHandler<DisplayElement>.Manage(this.DataGrid, new GridSource<DisplayElement>(results),
-            //                                               this.RebindRequired);
-            //this.DataGrid.LocalizeGrid();
+            if (columns != null)
+            {
+                foreach (var cName in columns)
+                {
+                    DataGrid.Levels[0].Columns.Add(new GridColumn()
+                        {
+                            DataField = cName,
+                            DataCellServerTemplateId = "CommonTemplate"
+                        });
+                }
+            }
+            ComponentArtGridHandler<DisplayElement>.Manage(this.DataGrid, new GridSource<DisplayElement>(Current.Context.ReportItem.Results),
+                                                           this.RebindRequired);
+            //   var managedUsers = Sitecore.Context.User.Delegation.GetManagedUsers();
+
         }
 
 
@@ -126,16 +119,14 @@ namespace ASR.sitecore_modules.Shell.ASR
             {               
                 if (key != null && key.StartsWith(inputParameter))
                 {
-                    parameters.Add(key.Substring(inputParameter.Length),Form.Attributes[key]);
+                    parameters.Add(key.Substring(inputParameter.Length), Sitecore.Context.ClientPage.ClientRequest.Form[key]);
                 }
             }
             if (parameters.Count > 0)
             {
-                context.Parameters.Add("parameters",MainUtil.ConvertToString(parameters,'^'));
-            }
-            // context.Parameters["reportname"] = Current.Context.ReportItem != null ? Current.Context.ReportItem.Name : "noname";
-
-            context.Parameters["ReportId"] = ReportId;
+                context.Parameters.Add("parameters",MainUtil.ConvertToString(parameters,'='));
+            }            
+            
             //string selectedValue = GridUtil.GetSelectedValue("Users");
             //string str2 = string.Empty;
             //ListString str3 = new ListString(selectedValue);
@@ -187,17 +178,17 @@ namespace ASR.sitecore_modules.Shell.ASR
             Assert.ArgumentNotNull(args, "args");
        
             if (args.Name == "asr:refreshgrid")
+            {              
+              SheerResponse.Redraw();
+              SheerResponse.SetInnerHtml("RibbonContainer", HtmlUtil.RenderControl(Ribbon));
+             // SheerResponse.Eval("refresh()");              
+            }
+            else if (args.Name == "asr:runfinished")
             {
-              ReportId = args.Parameters["id"];
-
-                
-                
-
-                
-               SheerResponse.Redraw();
-               SheerResponse.SetInnerHtml("RibbonContainer", HtmlUtil.RenderControl(Ribbon));
-              SheerResponse.Eval("refresh()");
-              
+                PopulateGrid();
+               // SheerResponse.Redraw();
+              //  SheerResponse.SetInnerHtml("RibbonContainer", string.Format("<h1>{0}</h1>","test"));
+                SheerResponse.Eval("refresh()");              
             }
         }
     }

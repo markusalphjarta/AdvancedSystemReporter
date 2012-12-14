@@ -11,44 +11,31 @@ namespace ASR.Interface
 	public abstract class BaseViewer : BaseReportObject
 	{
 	    public string Sort { get; set; }
-		#region Abstract methods
+
+        #region Abstract methods
 
 		public abstract void Display(DisplayElement dElement);
 
-		#endregion
+		#endregion		
 
-		private static BaseViewer Create(string type)
-		{
-			return BaseReportObject.createObject(type) as BaseViewer;
-		}
+        //internal static BaseViewer Create(string type, string parameters, string columnsXml)
+        //{
+        //    Assert.ArgumentNotNull(type, "type");
+        //    Assert.ArgumentNotNull(parameters, "parameters");
+        ////	BaseViewer oViewer = BaseViewer.Create(type);
+        ////	oViewer.AddParameters(parameters);
+        //    InitializeColumns(oViewer, columnsXml);
+        //    //backwards compatibility
+        //    if(oViewer.Columns.Count == 0)
+        //    {
+        //        InitializeColumnsOld( oViewer);
+        //    }
+        //    return oViewer;
+        //}
 
-		internal static BaseViewer Create(string type, string parameters)
-		{
-			Assert.ArgumentNotNull(type, "type");
-			Assert.ArgumentNotNull(parameters, "parameters");
-			BaseViewer oViewer = BaseViewer.Create(type);
-			oViewer.AddParameters(parameters);
-			return oViewer;
-		}
-
-		internal static BaseViewer Create(string type, string parameters, string columnsXml)
-		{
-			Assert.ArgumentNotNull(type, "type");
-			Assert.ArgumentNotNull(parameters, "parameters");
-			BaseViewer oViewer = BaseViewer.Create(type);
-			oViewer.AddParameters(parameters);
-			InitializeColumns(oViewer, columnsXml);
-            //backwards compatibility
-            if(oViewer.Columns.Count == 0)
-            {
-                InitializeColumnsOld( oViewer);
-            }
-			return oViewer;
-		}
-
-	    private static void InitializeColumnsOld(BaseViewer baseViewer)
+        private static void InitializeColumnsOld(BaseViewer baseViewer)
 	    {
-	        var columns = baseViewer.getParameter("columns");
+	        var columns = baseViewer.GetParameter("columns");
 	        if (!string.IsNullOrEmpty(columns))
 	        {
 	            var cols = columns.Split(',');

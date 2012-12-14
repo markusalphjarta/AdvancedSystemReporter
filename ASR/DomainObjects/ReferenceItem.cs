@@ -1,150 +1,147 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Collections.Specialized;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Sitecore.Data.Items;
-using Sitecore.Security.Accounts;
+using Sitecore.Diagnostics;
+using Sitecore.Web;
+using System.Linq;
 
 namespace ASR.DomainObjects
 {
     public class ReferenceItem : BaseItem
-	{
-	    
-        private readonly User _currentuser;
+    {
+        public ReferenceItem(Item innerItem)
+            : base(innerItem)
+        {
+        }
 
-	    public ReferenceItem(Item innerItem) : base(innerItem)
-	    {
-	        _currentuser = Sitecore.Context.User;
-	    }
+        #region Item fields
+        /// <summary>
+        /// Assembly field
+        /// </summary>
+        public string Assembly
+        {
+            get { return InnerItem["Assembly"]; }
+        }
 
-	    
-		public string Assembly
-		{
-		    get { return InnerItem["Assembly"]; }
-		}
-		
+        /// <summary>
+        /// Class field
+        /// </summary>
         public string Class
-		{
+        {
             get { return InnerItem["Class"]; }
-		}
-		
-		public string Attributes
-		{
-            get { return InnerItem["Attributes"]; }
+        }
 
-		}
+        public string Attributes { get { return InnerItem["Attributes"]; } }
 
-		public string ReplacedAttributes
-		{
-			get
-			{
-				string replacedAttributes = Attributes;
-				foreach (var pi in Parameters)
-				{
-					string tag = string.Concat('{', pi.Name, '}');
-					replacedAttributes = replacedAttributes.Replace(tag, pi.Value);
-				}
+        private NameValueCollection _attributes;
+        /// <summary>
+        /// Attributes field as a NameValueCollection
+        /// </summary>
+        public NameValueCollection AttributesCollection
+        {
+            get
+            {
+                return _attributes = _attributes ?? WebUtil.ParseUrlParameters(InnerItem["Attributes"], '|');
+            }
+        }
 
-                if (replacedAttributes.Contains("$"))
+        private IEnumerable<ParameterItem> _parameters;
+        /// <summary>
+        /// Parameters used in the attributes for this item
+        /// </summary>
+        public IEnumerable<ParameterItem> Parameters
+        {
+            get
+            {
+                return _parameters ?? (_parameters =
+                    ExtractParameters(Attributes).Select(ParameterItem.CreateParameter));
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Concatenatiion of Class and Assembly fields
+        /// </summary>
+        public string FullType
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(Assembly) ? string.Concat(Class, ", ", Assembly) : Class;
+            }
+        }
+
+
+        /// <summary>
+        /// Makes any macro replacements in the attributes with the key/values supplied.
+        /// Macros are defined as {Key}
+        /// </summary>
+        /// <param name="replacements">Key/Values to replace</param>
+        public void ReplaceAttributes(NameValueCollection replacements)
+        {
+            var r = new Regex(@"\{(\w*)\}");
+            foreach (var key in AttributesCollection.AllKeys)
+            {
+                var attribute = AttributesCollection[key];
+                attribute = r.Replace(attribute, m => replacements[m.Groups[1].Value] ?? string.Empty);
+
+                if (attribute.Contains("$"))
                 {
-                    replacedAttributes = Util.MakeDateReplacements(replacedAttributes);
-                    replacedAttributes = replacedAttributes.Replace("$sc_currentuser", _currentuser.ToString()); 
+                    Util.MakeDateReplacements(ref attribute);
                 }
-			    return replacedAttributes;
-			}
-		}
-		public string FullType
-		{
-			get
-			{
-				if (!string.IsNullOrEmpty(Assembly))
-				{
-					return string.Concat(Class, ", ", Assembly);
-				}
-				return Class;
-			}
-		}
+                AttributesCollection[key] = attribute;
+            }
+        }
 
-		public void SetAttributeValue(string tag, string value)
-		{
-			try
-			{
+        /// <summary>
+        /// Parses the string supplied and finds the parameteres defined (e.g. {Parameter})
+        /// </summary>
+        /// <param name="st"></param>
+        /// <returns></returns>
+        public static IEnumerable<string> ExtractParameters(string st)
+        {
+            var tags = new List<string>();
+            var r = new Regex(Current.Context.Settings.ParametersRegex);
+            var m = r.Match(st);
+            while (m.Success)
+            {
+                if (m.Groups.Count == 2)
+                {
+                    tags.Add(m.Groups[1].Value);
+                }
+                m = m.NextMatch();
+            }
+            return tags;
+        }
 
-				ParameterItem pi = Parameters.First(p => p.Name == tag);
+        public object MakeObject(NameValueCollection replacements = null)
+        {
+            var o = Sitecore.Reflection.ReflectionUtil.CreateObject(Assembly, Class, new object[] { });
+           
+            if(replacements != null) ReplaceAttributes(replacements);
 
-				if (pi != null)
-				{
-					pi.Value = Uri.UnescapeDataString(value);
-				}
-			}
-			// can't find element
-			catch (InvalidOperationException)
-			{
-				// do nothing;
-			}
-		}
+            foreach (var key in AttributesCollection.AllKeys)
+            {
+                var attribute = AttributesCollection[key];
 
-		public bool HasParameters
-		{
-			get
-			{
-				if (_parameters == null)
-				{
-					MakeParameterSet();
-				}
+                var propertyinfo = o.GetType().GetProperty(key, BindingFlags.NonPublic
+                                                                   | BindingFlags.Public | BindingFlags.Instance);
 
-				return _parameters.Count > 0;
-			}
-		}
+                if (propertyinfo != null)
+                {
+                    Sitecore.Reflection.ReflectionUtil.SetProperty(o, propertyinfo, attribute);
+                }
+                else
+                {
+                    Log.Warn(
+                        String.Format("ASR: cannot assign value to property {0} in type {1}", attribute, o.GetType()), this);
+                }
+            }
+            return o;
+        }
 
-		private HashSet<ParameterItem> _parameters;
-		public IEnumerable<ParameterItem> Parameters
-		{
-			get
-			{
-				if (_parameters == null || _parameters.Count == 0)
-				{
-					MakeParameterSet();
-				}
-				return _parameters;
-			}
-		}
-
-		private void MakeParameterSet()
-		{
-			_parameters = new HashSet<ParameterItem>();
-			foreach (var tag in extractParameters(Attributes))
-			{
-				ParameterItem pi = FindItem(tag);
-				if (pi != null)
-				{
-					_parameters.Add(pi);
-				}
-			}
-		}
-
-		private ParameterItem FindItem(string name)
-		{
-			string path = string.Concat(Settings.Instance.ParametersFolder, "/", name);
-
-		    return new ParameterItem(InnerItem.Database.GetItem(path));
-		}
-
-		private IEnumerable<string> extractParameters(string st)
-		{
-			var tags = new List<string>();
-			var r = new Regex(@"\{(\w*)\}");
-			Match m = r.Match(st);
-
-			while (m.Success)
-			{
-				if (m.Groups.Count == 2)
-				{
-					tags.Add(m.Groups[1].Value);
-				}
-				m = m.NextMatch();
-			}
-			return tags;
-		}
-	}
+    }
 }

@@ -15,26 +15,27 @@ namespace ASR.Export
 
         public string Save(string prefix, string extension)
         {
-            System.IO.StringWriter oStringWriter = new System.IO.StringWriter();
-           
-            string tempPath =
-                Sitecore.IO.FileUtil.GetWorkFilename(Sitecore.Configuration.Settings.TempFolderPath, prefix, extension);
-            
-            HashSet<string> headers = new HashSet<string>();
-            IEnumerable<DisplayElement> results = Current.Context.Report.GetResultElements();
-            foreach (var dElement in results)
-            {
-                foreach (var header in dElement.GetColumnNames())
-                {
-                    headers.Add(header);
-                }
-            }
-            writeHeader(oStringWriter,headers);
-            writeValues(oStringWriter, headers, results);
+            throw new NotImplementedException();
+            //System.IO.StringWriter oStringWriter = new System.IO.StringWriter();
 
-            System.IO.File.WriteAllText(tempPath, oStringWriter.ToString());
-           
-            return tempPath;
+            //string tempPath =
+            //    Sitecore.IO.FileUtil.GetWorkFilename(Sitecore.Configuration.Settings.TempFolderPath, prefix, extension);
+
+            //HashSet<string> headers = new HashSet<string>();
+            //IEnumerable<DisplayElement> results = Current.Context.Report.GetResultElements();
+            //foreach (var dElement in results)
+            //{
+            //    foreach (var header in dElement.GetColumnNames())
+            //    {
+            //        headers.Add(header);
+            //    }
+            //}
+            //writeHeader(oStringWriter,headers);
+            //writeValues(oStringWriter, headers, results);
+
+            //System.IO.File.WriteAllText(tempPath, oStringWriter.ToString());
+
+            //return tempPath;
         }
 
         private void writeHeader(System.IO.StringWriter writer,IEnumerable<string> headers)

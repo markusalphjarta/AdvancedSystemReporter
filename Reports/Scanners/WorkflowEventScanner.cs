@@ -23,7 +23,7 @@ namespace ASR.Reports.Scanners
 			{
 				if (string.IsNullOrEmpty(_scanMode))
 				{
-					_scanMode = getParameter("deep");
+					_scanMode = GetParameter("deep");
 				}
 				return (Mode)int.Parse(_scanMode);
 			}

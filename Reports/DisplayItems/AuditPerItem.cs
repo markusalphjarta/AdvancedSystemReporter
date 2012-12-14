@@ -31,7 +31,7 @@ namespace ASR.Reports.Items
 			{
 				if (_root == null)
 				{
-					_root = Db.GetItem(getParameter("root"));
+					_root = Db.GetItem(GetParameter("root"));
 				}
 				return _root;
 			}
@@ -45,7 +45,7 @@ namespace ASR.Reports.Items
             {
                 if (string.IsNullOrEmpty(_allversions))
                 {
-                    _allversions = getParameter("allversions");
+                    _allversions = GetParameter("allversions");
                 }
                 return _allversions == "1";
             }

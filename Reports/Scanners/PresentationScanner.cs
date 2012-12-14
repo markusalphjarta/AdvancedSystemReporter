@@ -17,7 +17,7 @@ namespace ASR.Reports.Presentation
         {
             get
             {
-                return getParameter(_textsearch);
+                return GetParameter(_textsearch);
             }
         }
 
@@ -33,8 +33,9 @@ namespace ASR.Reports.Presentation
         {
             
             ASR.Reports.Items.QueryScanner qs = new ASR.Reports.Items.QueryScanner();
-            qs.AddParameters(
-                string.Format("Query=/sitecore/content//*[contains(@__renderings,'{0}')]",Text));
+            //TODO
+            //qs.AddParameters(
+            //    string.Format("Query=/sitecore/content//*[contains(@__renderings,'{0}')]",Text));
 
 
             System.Collections.ArrayList list = new System.Collections.ArrayList(qs.Scan());

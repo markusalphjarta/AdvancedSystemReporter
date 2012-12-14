@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System;
 using System.Collections.Specialized;
+using Sitecore;
 using Sitecore.Data.Items;
+using Sitecore.Diagnostics;
 using Sitecore.Web.UI.HtmlControls;
 using System.Linq;
 
@@ -13,6 +15,14 @@ namespace ASR.DomainObjects
 	    public ParameterItem(Item innerItem) : base(innerItem)
 	    {
 	    }
+
+        public static ParameterItem CreateParameter(string name)
+        {
+            var path = string.Concat(Settings.Instance.ParametersFolder, "/", name);
+            var innerItem = Client.ContentDatabase.GetItem(path);
+            Assert.IsNotNull(innerItem, "can't find parameter {0}", name);
+            return new ParameterItem(innerItem);
+        }
 	    
 		public string Title
 		{
@@ -80,30 +90,32 @@ namespace ASR.DomainObjects
             }
         }
 
-		public IEnumerable<ValueItem> PossibleValues()
-		{
-		    return InnerItem.Children.Select(i=>new ValueItem(i));
-		}
+        public IEnumerable<ValueItem> PossibleValues()
+        {
+            return InnerItem.Children.Select(i => new ValueItem(i));
+        }
+
         public object BuildControl()
         {
             var parametertypesfolder = this.Database.GetItem("{13DEF994-4473-41D2-81A7-89BAA670D019}");
             var pi = parametertypesfolder.Children[Type];
             if (pi != null)
             {
-                dynamic ctl = Sitecore.Reflection.ReflectionUtil.CreateObject(pi["value"]);
+                dynamic ctl = new ReferenceItem(pi).MakeObject();
                 if (ctl != null)
                 {
                     ctl.ID = "parameter" + Name;
                     ctl.Header = Title;
                     ctl.Icon = Icon;
-                    if (InnerItem.HasChildren)
-                    {
-                        foreach (var possibleValue in PossibleValues())
-                        {
-                            ctl.Items.Add(possibleValue.DisplayName);
-                        }
+                    ctl.Items.AddRange(this.InnerItem.Children);
+                    //if (InnerItem.HasChildren)
+                    //{
+                    //    foreach (var possibleValue in PossibleValues())
+                    //    {
+                    //        ctl.Items.Add(possibleValue.DisplayName);
+                    //    }
                         
-                    }
+                    //}
                     ctl.Value = DefaultValue;
                 }
                 return ctl;
@@ -111,6 +123,11 @@ namespace ASR.DomainObjects
             return null;
         }
 
+        //todo remove
+        /// <summary>
+        /// deprecated
+        /// </summary>
+        /// <returns></returns>
         public Control MakeControl()
         {
             Control input = null;

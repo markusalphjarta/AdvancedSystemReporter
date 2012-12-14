@@ -17,18 +17,18 @@ namespace ASR.Controls
         
         public override void Render(HtmlTextWriter output, Ribbon ribbon, Item button, CommandContext context)
         {
-            var path = context.Parameters["reportid"];
-            if (string.IsNullOrEmpty(path)) return;
-            var reportItem = new ReportItem(Client.ContentDatabase.GetItem(path));
-            RenderParameters(output, reportItem, reportItem.Scanners.Cast<ReferenceItem>());
-            RenderParameters(output, reportItem, reportItem.Filters.Cast<ReferenceItem>());            
+            var reportItem = Current.Context.ReportItem;
+            if (reportItem == null) return;
+            RenderParameters(output, reportItem, reportItem.Scanners);
+            RenderParameters(output, reportItem, reportItem.Filters);            
        }
         
         private static void RenderParameters(HtmlTextWriter output, ReportItem reportItem, IEnumerable<ReferenceItem> referenceItems)
         {
-            foreach (var scanner in referenceItems)
+            
+            foreach (var ri in referenceItems)
             {
-                foreach (var parameter in scanner.Parameters)
+                foreach (var parameter in ri.Parameters)
                 {
                     dynamic ctl = parameter.BuildControl();
                     if (ctl != null)

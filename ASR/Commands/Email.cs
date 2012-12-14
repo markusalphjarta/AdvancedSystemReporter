@@ -57,10 +57,7 @@ namespace ASR.Commands
 
         public override CommandState QueryState(CommandContext context)
         {
-            if (Current.Context.Report == null)
-            {
-                return CommandState.Disabled;
-            }
+            //TODO
 
             return base.QueryState(context);
         }

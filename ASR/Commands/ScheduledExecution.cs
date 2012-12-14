@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 
 using Sitecore.Tasks;
 using Sitecore.Data.Items;
@@ -59,15 +60,16 @@ namespace ASR.Commands
 
       private string runReport(Item item, bool force)
         {
-          Assert.IsNotNull(item, "item");            
-          var reportItem = ReportItem.CreateFromParameters(item["parameters"]);
-          var prefix = reportItem.Name;
-          var report = reportItem.TransformToReport(null);
-          report.Run(null);
-          Log(string.Concat("Run",reportItem.Name));
-          return report.ResultsCount() != 0 || force
-                   ? new Export.HtmlExport(report, reportItem).SaveFile(prefix, "html")
-                   : null;
+            throw new NotImplementedException();
+          //Assert.IsNotNull(item, "item");            
+          //var reportItem = ReportItem.CreateFromParameters(item["parameters"]);
+          //var prefix = reportItem.Name;
+          //var report = reportItem.TransformToReport(null);
+          //report.Run(null);
+          //Log(string.Concat("Run",reportItem.Name));
+          //return report.ResultsCount() != 0 || force
+          //         ? new Export.HtmlExport(report, reportItem).SaveFile(prefix, "html")
+          //         : null;
         }   
     }
 }

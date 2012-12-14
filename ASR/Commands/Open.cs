@@ -1,4 +1,5 @@
-﻿using Sitecore.Shell.Framework.Commands;
+﻿using ASR.DomainObjects;
+using Sitecore.Shell.Framework.Commands;
 using Sitecore.Web.UI.Sheer;
 using Sitecore.Data.Items;
 using Sitecore.Data;
@@ -45,14 +46,11 @@ namespace ASR.Commands
                 switch(item.Template.Key)
                 {
                     case "report":
-                    //SCDirector director = new SCDirector(Current.Context.Settings.ConfigurationDatabase, "en");
 
-                    //ReportItem rItem = director.LoadObjectFromItem<ReportItem>(item);
                     //if (rItem != null)
                     {
-                        //Current.Context.ReportItem = rItem;
-                        //Current.Context.Report = null;
-                        AjaxScriptManager.Current.Dispatch(string.Format("asr:refreshgrid(id={0})",item.ID));
+                        Current.Context.ReportItem = new ReportItem(item);                        
+                        AjaxScriptManager.Current.Dispatch("asr:refreshgrid");
                     }
                         break;
                    

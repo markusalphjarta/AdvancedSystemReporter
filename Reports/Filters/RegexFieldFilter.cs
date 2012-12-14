@@ -18,7 +18,7 @@ namespace ASR.Reports.Filters
 			{
 				if (_regex == null)
 				{
-					string value = base.getParameter(REGEX_PARAMETER);
+					string value = base.GetParameter(REGEX_PARAMETER);
 					if (!String.IsNullOrEmpty(value))
 					{
 						_regex = new Regex(value);
